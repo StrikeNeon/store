@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% extends "master.html" %}
+{% load static %}
+</style>
+{% block title %}
+	<div class="index">
+	<title>Search Results</title>
+	</div>
+{% endblock %}
+
+{% block content %} 
+	{% if result %}
+	<div class="new_line">
+	<table>
+	    {% for product in result %}
+	    <tr>
+	        <td><a href="/frontpage/{{ product.ID }}/">{{ product.Name }}</a></td>
+	        <td><img src="{{product.Picture.url}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
+	        </img>
+	        <td> {{ product.Usage }}</td>
+	        <td> {{ product.brand }}</td>
+	        <td> {{ product.Price }} ed</td>
+	    </tr>
+	    {% endfor %}
+	</table>
+	</div>
+	{% else %}
+	    <p>No products matched search.</p>
+	{% endif %}
+ {% endblock %}
+</body>

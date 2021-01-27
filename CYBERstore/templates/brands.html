@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+{% extends "master.html" %}
+{% block title %}
+	<div class="index">
+	<title>Brand listing</title>
+	<h1> ShinTek partner brands </h1>
+	<p>The best weapons and cybertech reseller in NeoTokyo </p>
+	<p>We are currently partnered with the following brands:</p>
+	</div>
+{% endblock %}
+
+{% block content %} 
+	{% if brand_list %}
+	<div class="new_line">
+	<table>
+	    {% for brand in brand_list %}
+	    <tr>
+	        <td> {{ brand.Brandname }}</td>
+	        <td><img src="{{brand.Picture.url}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
+	        </img>
+	        <td> {{ brand.Country }}</td>
+	    </tr>
+	    {% endfor %}
+	</table>
+	</div>
+	{% else %}
+	    <p>No brands are available.</p>
+	{% endif %}
+ {% endblock %}
+</body>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+{% extends "master.html" %}
+{% block title %}
+<div class="index">
+<title> Product details</title>
+<h1> {{product.Name}} details </h1>
+</div>>
+{% endblock %}
+
+{% block content %} 
+<div class="new_line">
+<table>
+	    <tr>
+	        <img src="{{product.Picture.url}}" class="img-responsive" style="width: 10%; float: left; margin-right: 15px;"></img>
+	        <p> {{ product.Description }}</p>
+	        <td> {{ product.Usage }}</td>
+			<td> {{ product.brand }}</td>
+			<td> {{ product.Price }} ed</td>
+			<td> {{ rating }} stars</td>
+	    </tr>
+	</table>
+
+{% if user.is_authenticated %}
+<form action="{% url 'CYBERstore:cart_add' product.pk %}" method="post">
+    {{ cart_product_form }}
+    {% csrf_token %}
+    <input type="submit" value="Add to cart">
+</form>
+<form action="{% url 'CYBERstore:review_add' product.pk %}" method="post">
+    {{ review_form }}
+    {% csrf_token %}
+    <input type="submit" value="submit review">
+</form>
+{% if review_list %}
+ <div class="new_line"> Latest reviews</div>
+ {% for review in review_list %}
+ <div class="new_line"><table>
+	    <tr>
+	        {{ review.review_text }}
+	        <td> {{ review.rating }}</td>
+	    </tr>
+	</table></div>
+ {% endfor %}
+ {% else %}
+ <div class="new_line"> No reviews avalible</div>
+ {% endif %}
+{% else %}
+<a href="{% url 'CYBERstore:login' %}">Login to purchase</a>
+</form>
+{% endif %}
+</div>
+ {% endblock %}
+</body>
+

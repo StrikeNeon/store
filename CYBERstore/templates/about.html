@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% extends "master.html" %}
+{% block title %}
+
+	<div class="fixed">
+	<title>ShinTek storefront</title>
+	<h1> Welcome to ShinTek </h1>
+	<p>The best weapons and cybertech reseller in NeoTokyo</p>
+	<p>About Us:</p>
+	</div>
+{% endblock %}
+
+{% block content %} 
+	<div class="fixed">
+	{% if Merchcount %}
+	   <p>This is blank</p>
+	   <p>{{Merchcount}}, {{Brandcount}}</p>
+	{% else %}
+	    <p>Error</p>
+	{% endif %}
+ {% endblock %}
+</body>
