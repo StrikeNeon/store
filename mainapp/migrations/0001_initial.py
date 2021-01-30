@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 ('Description', models.CharField(max_length=200)),
                 ('Picture', models.ImageField(blank=True, null=True, upload_to='media/products/')),
                 ('PublishDate', models.DateTimeField(auto_now_add=True)),
-                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='CYBERstore.Brand')),
+                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mainapp.Brand')),
             ],
         ),
         migrations.CreateModel(
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('quantity', models.PositiveIntegerField(default=0, verbose_name='quantity')),
                 ('price', models.PositiveIntegerField(default=0, verbose_name='price')),
                 ('add_datetime', models.DateTimeField(auto_now_add=True, verbose_name='added on')),
-                ('Merch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='CYBERstore.Merch')),
+                ('Merch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mainapp.Merch')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='basket', to=settings.AUTH_USER_MODEL)),
             ],
         ),

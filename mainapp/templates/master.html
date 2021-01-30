@@ -60,15 +60,15 @@ div.new_line{
 </head>
 <body>
 <div class="sidenav">
-		<a href="{% url 'CYBERstore:frontpage' %}">Products</a>
-		<a href="{% url 'CYBERstore:brands' %}">Brands</a>
-		<a href="{% url 'CYBERstore:about' %}">About us</a>
+		<a href="{% url 'mainapp:frontpage' %}">Products</a>
+		<a href="{% url 'mainapp:brands' %}">Brands</a>
+		<a href="{% url 'mainapp:about' %}">About us</a>
 		{% if user.is_authenticated %}
-		<a href="{% url 'CYBERstore:logout' %}">Logout</a>
-		<a href="{% url 'CYBERstore:cart_detail' %}">Cart</a>
+		<a href="{% url 'mainapp:logout' %}">Logout</a>
+		<a href="{% url 'mainapp:cart_detail' %}">Cart</a>
 		{% else %}
-		<a href="{% url 'CYBERstore:login' %}">Login</a>
-		<a href="{% url 'CYBERstore:register' %}">Register</a>
+		<a href="{% url 'mainapp:login' %}">Login</a>
+		<a href="{% url 'mainapp:register' %}">Register</a>
 		{% endif %}
 	</div>
 	<div class="fixed">

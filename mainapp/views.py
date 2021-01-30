@@ -11,17 +11,13 @@ from os import getcwd, path
 from .forms import LoginForm, UserProfileInfoForm, UserForm, CartAddProductForm, OrderCreateForm, Review_form, SearchForm
 from . import cart
 
-from rest_framework import viewsets
-from .serializers import MerchSerializer, BrandSerializer, ReviewSerializer, OrderItemSerializer
-from rest_framework.permissions import IsAuthenticated
-
 
 #gonna go on a limb here - this whole block of nonsence would be obvious
 #nah, commenting it anyways
 
 def constructPath(): #just for convinience, don't want to spell the whole path
     projPath = getcwd()
-    appPath = path.join(projPath, 'CYBERstore')
+    appPath = path.join(projPath, 'mainapp')
     templatePath = path.join(appPath, 'templates')
     return templatePath
 
@@ -36,13 +32,13 @@ def cart_add(request, product_id):
         basket.add(product=product,#calling the add method
                     quantity=cd['quantity'],
                     update_quantity=cd['update'])
-    return HttpResponseRedirect(reverse('CYBERstore:cart_detail'))
+    return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
 def cart_remove(request, product_id):
     basket = cart.Cart(request)
     product = get_object_or_404(Merch, ID=product_id)
     basket.remove(product)#calling remove method
-    return HttpResponseRedirect(reverse('CYBERstore:cart_detail'))
+    return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
 def cart_detail(request):#it just calls the basket and renders
     basket = cart.Cart(request)
@@ -78,7 +74,7 @@ def user_login(request):#logs the user in
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(reverse('CYBERstore:frontpage'))
+                    return HttpResponseRedirect(reverse('mainapp:frontpage'))
                 else:
                     return HttpResponse('Disabled account')
             else:
@@ -115,7 +111,7 @@ def register(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('CYBERstore:frontpage'))
+    return HttpResponseRedirect(reverse('mainapp:frontpage'))
 
 #this is a dumb way to do it
 #make a REST API for shop metrics
@@ -160,7 +156,7 @@ class brand_list(ListView):
     
     def get_context_data(self):
         context = super().get_context_data()
-        context['brand_list'] =  Brand.objects.all()
+        context['brand_list'] = Brand.objects.all()
         return context
 
 
@@ -173,7 +169,7 @@ def review_add(request, product_id):
         review.product = Merch.objects.get(ID=product_id)
         review.user_id = request.user
         review.save()
-    return HttpResponseRedirect(reverse('CYBERstore:product detail',args=[product_id]))
+    return HttpResponseRedirect(reverse('mainapp:product detail',args=[product_id]))
 
 def product_detail(request, product_id):
     product = get_object_or_404(Merch, pk=product_id,)
@@ -196,43 +192,3 @@ def about_page(request):#this is an empty template and only has 2 variables (so,
 def brand_detail(request, brand_id):
     brand = get_object_or_404(Brand, pk=brand_id)
     return render(request, 'brand_detail.html', {'brand': brand})
-
-
-#---------------------------REST SECTION-------------------------------------
-
-
-class MerchViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Merch.objects.all().order_by('-PublishDate')
-    serializer_class = MerchSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class BrandViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    permission_classes = [IsAuthenticated]
-    
-class ReviewViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Review.objects.all().order_by('-PublishDate')
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class OrderViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    permission_classes = [IsAuthenticated]
-
-#if I were to come back to this - I need to structure it better

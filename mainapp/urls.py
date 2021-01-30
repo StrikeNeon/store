@@ -17,14 +17,14 @@ from django.urls import path
 
 from . import views
 
-app_name = 'CYBERstore'
+app_name = 'mainapp'
 urlpatterns = [
     path('', views.Index.as_view(), name='frontpage'),
 
     path('search/', views.Search.as_view(), name='search'),
     
     path('<int:product_id>/', views.product_detail, name='product detail'),
-    path('brands/', views.brand_list, name='brands'),
+    path('brands/', views.brand_list.as_view(), name='brands'),
     path('about/', views.about_page, name='about'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),

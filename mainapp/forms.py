@@ -12,8 +12,8 @@ class UserForm(forms.ModelForm):
 
 class UserProfileInfoForm(forms.ModelForm):
      class Meta():
-         model = UserProfileInfo
-         fields = ('profile_pic',)
+        model = UserProfileInfo
+        fields = ('profile_pic',)
          
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -30,8 +30,8 @@ class Review_form(forms.Form):
     rating = forms.TypedChoiceField(choices=Review.Rating_Choices, coerce=int)
     text = forms.CharField(required=False, initial='')
     class Meta():
-         model = Review
-         fields = ('text','rating')
+        model = Review
+        fields = ('text','rating')
 
 class OrderCreateForm(forms.ModelForm):
     class Meta:

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('CYBERstore', '0004_auto_20200714_0318'),
+        ('mainapp', '0004_auto_20200714_0318'),
     ]
 
     operations = [

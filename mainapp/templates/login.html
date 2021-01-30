@@ -4,7 +4,7 @@
 {% block title %}Log-in{% endblock %}
 {% block content %}
       <h1>Login here :</h1>
-<form method="post" action="{% url 'CYBERstore:login' %}">
+<form method="post" action="{% url 'mainapp:login' %}">
           {% csrf_token %}
           {# A more "HTML" way of creating the login form#}
           <label for="username">Username:</label>

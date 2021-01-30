@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('CYBERstore', '0005_banner_subscribed'),
+        ('mainapp', '0005_banner_subscribed'),
     ]
 
     operations = [
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('ID', models.AutoField(primary_key=True, serialize=False)),
                 ('review_text', models.TextField(verbose_name='review text')),
                 ('rating', models.PositiveIntegerField(choices=[('one', 1), ('two', 2), ('three', 3), ('four', 4), ('five', 5)])),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='CYBERstore.Merch', verbose_name='reviewed product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mainapp.Merch', verbose_name='reviewed product')),
                 ('user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='reviewer id')),
             ],
         ),

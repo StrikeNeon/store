@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import template
-from CYBERstore.models import Banner
-from CYBERstore.views import constructPath
+from mainapp.models import Banner
+from mainapp.views import constructPath
 from os import  path
 from itertools import accumulate
 from random import choices
@@ -24,5 +24,8 @@ register=template.Library()
 
 @register.inclusion_tag(path.join(constructPath(), 'banner.html'))
 def big_banner():
-    banners = Banner.objects.get(id = change())
-    return {'banners': banners}
+    try:
+        banners = Banner.objects.get(id = change())
+        return {'banners': banners}
+    except IndexError:
+        return None

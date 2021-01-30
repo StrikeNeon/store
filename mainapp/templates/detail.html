@@ -22,12 +22,12 @@
 	</table>
 
 {% if user.is_authenticated %}
-<form action="{% url 'CYBERstore:cart_add' product.pk %}" method="post">
+<form action="{% url 'mainapp:cart_add' product.pk %}" method="post">
     {{ cart_product_form }}
     {% csrf_token %}
     <input type="submit" value="Add to cart">
 </form>
-<form action="{% url 'CYBERstore:review_add' product.pk %}" method="post">
+<form action="{% url 'mainapp:review_add' product.pk %}" method="post">
     {{ review_form }}
     {% csrf_token %}
     <input type="submit" value="submit review">
@@ -46,7 +46,7 @@
  <div class="new_line"> No reviews avalible</div>
  {% endif %}
 {% else %}
-<a href="{% url 'CYBERstore:login' %}">Login to purchase</a>
+<a href="{% url 'mainapp:login' %}">Login to purchase</a>
 </form>
 {% endif %}
 </div>

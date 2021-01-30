@@ -34,7 +34,7 @@
                     </td>
                     <td>{{ product.name }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td><a href="{% url 'CYBERstore:cart_remove' product.pk %}">Remove</a></td>
+                    <td><a href="{% url 'mainapp:cart_remove' product.pk %}">Remove</a></td>
                     <td class="num">{{ item.price }} ed</td>
                     <td class="num">{{ item.total_price }} ed</td>
                 </tr>
@@ -51,7 +51,7 @@
     <p>no items to display</p>
     {%endif%}
     <p class="text-right">
-        <a href="{% url 'CYBERstore:frontpage' %}" class="button light">Continue shopping</a>
-        <a href="{% url "CYBERstore:order_create" %}" class="button"> Place order </a>
+        <a href="{% url 'mainapp:frontpage' %}" class="button light">Continue shopping</a>
+        <a href="{% url "mainapp:order_create" %}" class="button"> Place order </a>
     </p>
 {% endblock %}

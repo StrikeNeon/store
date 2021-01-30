@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class CyberstoreConfig(AppConfig):
-    name = 'CYBERstore'
+class mainappconfig(AppConfig):
+    name = 'mainapp'

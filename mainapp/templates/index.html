@@ -15,7 +15,7 @@
 	<div class="new_line">
     {{ search_form }}
     {% csrf_token %}
-    <form class="SearchForm" method="GET" action="{% url 'CYBERstore:search'%}" >
+    <form class="SearchForm" method="GET" action="{% url 'mainapp:search'%}" >
     <input class="SearchForm" type="search" name="search"> 
     <button class="SearchForm" type="submit"> Search </button>
 </form></div>
