@@ -1,5 +1,3 @@
 __pycache__
 *.sqlite3
-media
-migrations
-Supeuser_creds
+Supeuser_creds.txt
