@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django import template
-from mainapp.models import Banner
-from mainapp.views import constructPath
-from os import  path
+from mainapp.models import banner
+from mainapp.views import construct_path
+from os import path
 from itertools import accumulate
 from random import choices
+
 
 def change():
     '''
@@ -13,19 +14,19 @@ def change():
         ecxept it uses cumulatives, not relatives
         no one will probably see this though, it's just a banner tag :(
     '''
-    bannerid = list(Banner.objects.values_list('id', flat=True))
-    subs = list(Banner.objects.values_list('subscribed', flat=True))
+    bannerid = list(banner.objects.values_list('id', flat=True))
+    subs = list(banner.objects.values_list('subscribed', flat=True))
     weights = accumulate(subs)
-    return choices(bannerid, weights,k=1)[0]
+    return choices(bannerid, weights, k=1)[0]
 
 
+register = template.Library()
 
-register=template.Library()
 
-@register.inclusion_tag(path.join(constructPath(), 'banner.html'))
+@register.inclusion_tag(path.join(construct_path(), 'banner.html'))
 def big_banner():
     try:
-        banners = Banner.objects.get(id = change())
+        banners = banner.objects.get(id=change())
         return {'banners': banners}
     except IndexError:
         return None

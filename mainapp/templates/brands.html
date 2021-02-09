@@ -16,10 +16,10 @@
 	<table>
 	    {% for brand in brand_list %}
 	    <tr>
-	        <td> {{ brand.Brandname }}</td>
-	        <td><img src="{{brand.Picture.url}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
+	        <td> {{ brand.brand_name }}</td>
+	        <td><img src="{{brand.picture.url}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
 	        </img>
-	        <td> {{ brand.Country }}</td>
+	        <td> {{ brand.country }}</td>
 	    </tr>
 	    {% endfor %}
 	</table>

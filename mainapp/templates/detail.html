@@ -4,7 +4,7 @@
 {% block title %}
 <div class="index">
 <title> Product details</title>
-<h1> {{product.Name}} details </h1>
+<h1> {{product.name}} details </h1>
 </div>>
 {% endblock %}
 
@@ -12,11 +12,11 @@
 <div class="new_line">
 <table>
 	    <tr>
-	        <img src="{{product.Picture.url}}" class="img-responsive" style="width: 10%; float: left; margin-right: 15px;"></img>
-	        <p> {{ product.Description }}</p>
-	        <td> {{ product.Usage }}</td>
+	        <img src="{{product.picture.url}}" class="img-responsive" style="width: 10%; float: left; margin-right: 15px;"></img>
+	        <p> {{ product.description }}</p>
+	        <td> {{ product.usage }}</td>
 			<td> {{ product.brand }}</td>
-			<td> {{ product.Price }} ed</td>
+			<td> {{ product.price }} ed</td>
 			<td> {{ rating }} stars</td>
 	    </tr>
 	</table>

@@ -19,9 +19,9 @@ from . import views
 
 app_name = 'mainapp'
 urlpatterns = [
-    path('', views.Index.as_view(), name='frontpage'),
+    path('', views.index.as_view(), name='frontpage'),
 
-    path('search/', views.Search.as_view(), name='search'),
+    path('search/', views.search.as_view(), name='search'),
     
     path('<int:product_id>/', views.product_detail, name='product detail'),
     path('brands/', views.brand_list.as_view(), name='brands'),
@@ -33,5 +33,5 @@ urlpatterns = [
     path('cart_add/<int:product_id>', views.cart_add, name='cart_add'),
     path('cart_remove/<int:product_id>', views.cart_remove, name='cart_remove'),
     path('cart_detail/create/', views.order_create, name='order_create'),
-    path('register/',views.register,name='register'),
+    path('register/', views.register, name='register'),
 ]

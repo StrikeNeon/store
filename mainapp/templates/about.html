@@ -12,11 +12,11 @@
 
 {% block content %} 
 	<div class="fixed">
-	{% if Merchcount %}
+	{% if merch_count %}
 	   <p>This is blank</p>
-	   <p>{{Merchcount}}, {{Brandcount}}</p>
+	   <p>{{merch_count}}, {{brand_count}}</p>
 	{% else %}
-	    <p>Error</p>
+	    <p>We have nothing</p>
 	{% endif %}
  {% endblock %}
 </body>
