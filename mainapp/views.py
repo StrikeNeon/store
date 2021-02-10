@@ -62,7 +62,7 @@ def order_create(request):
             for item in basket:
                 order_item.objects.create(order=order,
                                           product=item['product'],
-                                          price=item['Price'],
+                                          price=item['price'],
                                           quantity=item['quantity'])
 
             basket.clear()
@@ -179,7 +179,7 @@ def review_add(request, product_id):
         review_post = review()
         review_post.review_text = form.cleaned_data['text']
         review_post.rating = int(form.cleaned_data['rating'])
-        review_post.product = merch.objects.get(ID=product_id)
+        review_post.product = merch.objects.get(id=product_id)
         review_post.user_id = request.user
         review_post.save()
     return HttpResponseRedirect(reverse('mainapp:product detail',

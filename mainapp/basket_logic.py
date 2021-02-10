@@ -25,7 +25,7 @@ class basket(object):
         if product_id not in self.cart:
             # ! don't remove conversion to str, it breaks the cart entierly, it has to do with form vlaues being strings !
             self.cart[product_id] = {'quantity': 0,
-                                     'Price': str(product.Price)}  # inner dict for saving quantity and price
+                                     'price': str(product.price)}  # inner dict for saving quantity and price
         if update_quantity:
             # if quantity is one use default 'case'
             self.cart[product_id]['quantity'] = quantity
@@ -55,13 +55,13 @@ class basket(object):
         """
         product_ids = self.cart.keys()
         # get product objects and add them
-        products = merch.objects.filter(ID__in=product_ids)
+        products = merch.objects.filter(id__in=product_ids)
         for product in products:
             self.cart[str(product.id)]['product'] = product
 
         for item in self.cart.values():  # converts to decimal and get total
-            item['Price'] = Decimal(item['Price'])
-            item['total_price'] = item['Price'] * item['quantity']
+            item['price'] = Decimal(item['price'])
+            item['total_price'] = item['price'] * item['quantity']
             yield item
 
     def __len__(self):
@@ -74,7 +74,7 @@ class basket(object):
         """
         this calculates the sum of all items
         """
-        return sum(Decimal(item['Price']) * item['quantity'] for item in
+        return sum(Decimal(item['price']) * item['quantity'] for item in
                    self.cart.values())
 
     def clear(self):

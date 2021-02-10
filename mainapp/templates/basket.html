@@ -24,7 +24,7 @@
             {% with product=item.product %}
                 <tr>
                     <td>
-                        <a href="/frontpage/{{ product.id }}/">
+                        <a href="/{{ product.id }}/">{{ product.name }}
                                 {% if product.picture %}
                                   <img src= " {{ product.picture.url }}"class="img-responsive" style="width: 20%; float: left; margin-right: 15px;"></img>
                                 {% else %}

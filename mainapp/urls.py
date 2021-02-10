@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('search/', views.search.as_view(), name='search'),
     
-    path('<int:product_id>/', views.product_detail, name='product detail'),
+    path('<int:product_id>/', views.product_detail, name='product_detail'),
     path('brands/', views.brand_list.as_view(), name='brands'),
     path('about/', views.about_page, name='about'),
     path('login/', views.user_login, name='login'),
