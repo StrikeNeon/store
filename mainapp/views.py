@@ -5,6 +5,9 @@ from django.views.generic import ListView
 from django.db.models import Avg
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 
 from .models import brand, merch, order_item, review
 from os import getcwd, path
@@ -39,15 +42,34 @@ def cart_add(request, product_id):
 
 
 def cart_remove(request, product_id):
-    basket = basket_logic.basket(request)
-    product = get_object_or_404(merch, id=product_id)
-    basket.remove(product)
-    return HttpResponseRedirect(reverse('mainapp:cart_detail'))
+    if request.is_ajax():
+        basket = basket_logic.basket(request)
+        product = get_object_or_404(merch, id=product_id)
+        basket.remove(product)
+        content = {
+            'basket': basket,
+        }
+        result = render_to_string('inc_basket_list.html',
+                                  content)
+        return JsonResponse({'result': result})
 
 
 def cart_detail(request):  # it just calls the basket and renders
     basket = basket_logic.basket(request)
     return render(request, 'basket.html', {'basket': basket})
+
+
+def basket_edit(request, pk, quantity):
+    if request.is_ajax():
+        basket = basket_logic.basket(request)
+        basket.add(product=pk,  # calling the add method
+                   quantity=int(quantity))
+        content = {
+            'basket': basket,
+        }
+        result = render_to_string('inc_basket_list.html',
+                                  content)
+        return JsonResponse({'result': result})
 
 
 def order_create(request):

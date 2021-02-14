@@ -77,6 +77,12 @@ class basket(object):
         return sum(Decimal(item['price']) * item['quantity'] for item in
                    self.cart.values())
 
+    def get_total_quantity(self):
+        """
+        this calculates the sum of all items
+        """
+        return sum(item['quantity'] for item in self.cart.values())
+
     def clear(self):
         # delete the cart from session
         del self.session[settings.CART_SESSION_ID]

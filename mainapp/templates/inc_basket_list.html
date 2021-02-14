@@ -1,0 +1,30 @@
+{% load static %}
+
+{% for item in basket %}
+    {% with product=item.product %}
+        <div class="basket_record">
+            <span class="product_name"><a href="/{{ product.id }}/">{{ product.name }}
+                {% if product.picture %}
+                    <img src= " {{ product.picture.url }}"class="img-responsive" style="width: 20%; float: left; margin-right: 15px;"></img>
+                {% else %}
+                    <img src= "{% static "img/no_image.png" %}"></img>
+                {% endif %}
+                </a></span>
+            <span class="category_name">{{ product.usage }}</span> 
+            <input name="{{ product.id }}"type="number" class="form-control"
+                                value="{{ item.quantity }}" min="0">
+            <span class="product_cost">{{ product.price }} ed</span>
+            <button class="btn btn-round">
+            remove item
+            </button>
+        </div>
+    {% endwith %}
+    
+{% endfor %}
+
+{% if basket %}
+    <div class="basket_summary">
+        items in total {{ basket.get_total_quantity }}
+        {{ basket.get_total_price }} ed
+    </div>
+{% endif %}
