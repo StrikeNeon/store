@@ -15,9 +15,6 @@ from .forms import (login_form, user_profile_info_form,
 from . import basket_logic
 
 
-# gonna go on a limb here - this whole block of nonsence would be obvious
-# nah, commenting it anyways
-
 def construct_path():
     # just for convinience, don't want to spell the whole path
     projPath = getcwd()
@@ -146,6 +143,8 @@ class index(ListView):
 
 class search(ListView):
     model = merch
+    ordering = ['-publish_date']
+    paginate_by = 5
     template_name = 'search.html'
     context_object_name = 'result'
 

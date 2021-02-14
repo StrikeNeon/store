@@ -6,7 +6,7 @@ from django.db import models
 
 class user_profile_info(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='media/profile_pics', blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
 
     def __str__(self):
         return self.user.Username
@@ -15,7 +15,7 @@ class user_profile_info(models.Model):
 class brand(models.Model):
     brand_name = models.CharField(max_length=20)
     picture = models.ImageField(null=True, blank=True,
-                                upload_to="media/brands/")
+                                upload_to="brands/")
     countries_choices = [
                         ('RU', 'Russia'),
                         ('CN', 'China'),
@@ -39,7 +39,7 @@ class merch(models.Model):
     price = models.PositiveIntegerField(verbose_name='price', default=0)
     description = models.TextField(blank=True)
     picture = models.ImageField(null=True, blank=True,
-                                upload_to="media/products/")
+                                upload_to="products/")
     publish_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -106,7 +106,7 @@ class banner(models.Model):
     # check the template tag for banner
     # there's somewhat of a surprise mechanic there
     link = models.URLField(max_length=200, blank=False)
-    banner_pic = models.ImageField(upload_to='media/banners', blank=False)
+    banner_pic = models.ImageField(upload_to='banners/', blank=False)
     subscribed = models.PositiveIntegerField(default=1,
                                              validators=[MinValueValidator(1),
                                                          MaxValueValidator(12)]
