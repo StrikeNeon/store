@@ -3,20 +3,18 @@
 {% block title %}
 
 	<div class="fixed">
-	<title>ShinTek storefront</title>
-	<h1> Welcome to ShinTek </h1>
-	<p>The best weapons and cybertech reseller in NeoTokyo</p>
-	<p>About Us:</p>
+	<title>store</title>
+	<h1>This is a store</h1>
 	</div>
 {% endblock %}
 
 {% block content %} 
 	<div class="fixed">
-	{% if Merchcount %}
+	{% if merch_count %}
 	   <p>This is blank</p>
-	   <p>{{Merchcount}}, {{Brandcount}}</p>
+	   <p>{{merch_count}}, {{brand_count}}</p>
 	{% else %}
-	    <p>Error</p>
+	    <p>We have nothing</p>
 	{% endif %}
  {% endblock %}
 </body>

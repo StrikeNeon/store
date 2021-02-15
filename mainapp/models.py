@@ -1,51 +1,53 @@
 
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator #uncomment maxvalue if you need a subs limit
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
+class user_profile_info(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
 
-class UserProfileInfo(models.Model):#Thank GOD I stopped with the task, or I might have created a full site with reviews, metrics etc.
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='media/profile_pics',blank=True)
     def __str__(self):
-      return self.user.username
-    
-    
-class Brand(models.Model):
-    ID = models.AutoField(primary_key=True)
-    Brandname = models.CharField(max_length=20)
-    Picture = models.ImageField(null=True, blank=True, upload_to="media/brands/")
-    Countries_Choices = [
-    ('RU', 'Russia'),
-    ('CN', 'China'),
-    ('JP', 'Japan'),
-    ('US', 'United States'),
-    ('EG', 'Egypt'),
-    ]
-    Country = models.CharField(
+        return self.user.Username
+
+
+class brand(models.Model):
+    brand_name = models.CharField(max_length=20)
+    picture = models.ImageField(null=True, blank=True,
+                                upload_to="brands/")
+    countries_choices = [
+                        ('RU', 'Russia'),
+                        ('CN', 'China'),
+                        ('JP', 'Japan'),
+                        ('US', 'United States'),
+                        ('EG', 'Egypt'),
+                        ]
+    country = models.CharField(
         max_length=2,
-        choices=Countries_Choices)
-    
+        choices=countries_choices)
+
     def __str__(self):
-        return self.Brandname
-    
-class Merch(models.Model):
-    ID = models.AutoField(primary_key=True)
-    Name = models.CharField(verbose_name='Name', max_length=200, blank = False,null = True)
-    Usage = models.CharField(max_length=50, blank = False)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    Price = models.PositiveIntegerField(verbose_name='Price', default = 0)
-    
-    Description = models.TextField(blank=True)
-    Picture = models.ImageField(null=True, blank=True, upload_to="media/products/")
-    PublishDate = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.Name
+        return self.brand_name
 
 
-class Order(models.Model): #order is the client's contacts, OrderItem is what the client ordered
+class merch(models.Model):
+    name = models.CharField(verbose_name='name', max_length=200,
+                            blank=False, null=True)
+    usage = models.CharField(max_length=50, blank=False)
+    brand = models.ForeignKey(brand, on_delete=models.CASCADE)
+    price = models.PositiveIntegerField(verbose_name='price', default=0)
+    description = models.TextField(blank=True)
+    picture = models.ImageField(null=True, blank=True,
+                                upload_to="products/")
+    publish_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class order(models.Model): 
+    # order is the client's contacts, OrderItem is what the client ordered
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -58,8 +60,8 @@ class Order(models.Model): #order is the client's contacts, OrderItem is what th
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = 'Order'
-        verbose_name_plural = 'Orders'
+        verbose_name = 'order'
+        verbose_name_plural = 'orders'
 
     def __str__(self):
         return 'Order {}'.format(self.id)
@@ -68,9 +70,11 @@ class Order(models.Model): #order is the client's contacts, OrderItem is what th
         return sum(item.get_cost() for item in self.items.all())
 
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Merch, on_delete=models.CASCADE, related_name='order_items')
+class order_item(models.Model):
+    order = models.ForeignKey(order, on_delete=models.CASCADE,
+                              related_name='items')
+    product = models.ForeignKey(merch, on_delete=models.CASCADE,
+                                related_name='order_items')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
@@ -79,26 +83,31 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
-    
-class Review(models.Model):
-    ID = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE, verbose_name='reviewer id')
-    product = models.ForeignKey(Merch, on_delete=models.CASCADE, verbose_name='reviewed product')
+
+
+class review(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,
+                                verbose_name='reviewer id')
+    product = models.ForeignKey(merch, on_delete=models.CASCADE,
+                                verbose_name='reviewed product')
     review_text = models.TextField(blank=False, verbose_name='review text')
-    Rating_Choices = [
-    (1, 'one'),(2, 'two'),(3, 'three'),(4, 'four'),(5, 'five')
-    ]
-    rating = models.PositiveIntegerField(choices=Rating_Choices)
+    rating_choices = [
+                    (1, 'one'), (2, 'two'),
+                    (3, 'three'), (4, 'four'),
+                    (5, 'five')
+                    ]
+    rating = models.PositiveIntegerField(choices=rating_choices)
 
     def __str__(self):
-        return 'Review id: {}'.format(self.ID)
+        return 'Review id: {}'.format(self.id)
 
 
-
-class Banner(models.Model): #check the template tag for banner - there's somewhat of a surprise mechanic there
-    id = models.AutoField(primary_key=True)
-    link = models.URLField(max_length=200,blank=False)
-    banner_pic = models.ImageField(upload_to='media/banners',blank=False)
+class banner(models.Model):
+    # check the template tag for banner
+    # there's somewhat of a surprise mechanic there
+    link = models.URLField(max_length=200, blank=False)
+    banner_pic = models.ImageField(upload_to='banners/', blank=False)
     subscribed = models.PositiveIntegerField(default=1,
-                                             validators =[MinValueValidator(1), MaxValueValidator(12)] #add maxvalue here
+                                             validators=[MinValueValidator(1),
+                                                         MaxValueValidator(12)]
                                              )

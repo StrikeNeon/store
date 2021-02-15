@@ -8,45 +8,9 @@
 {% block content %}
     <h1>Your shopping cart</h1>
     {%if basket%}
-    <table class="cart">
-        <thead>
-        <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Remove</th>
-            <th>Unit price</th>
-            <th>Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in basket %}
-            {% with product=item.product %}
-                <tr>
-                    <td>
-                        <a href="/frontpage/{{ product.ID }}/">
-                                {% if product.Picture %}
-                                  <img src= " {{ product.Picture.url }}"class="img-responsive" style="width: 20%; float: left; margin-right: 15px;"></img>
-                                {% else %}
-                                   <img src= "{% static "img/no_image.png" %}"></img>
-                                {% endif %}">
-                        </a>
-                    </td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td><a href="{% url 'mainapp:cart_remove' product.pk %}">Remove</a></td>
-                    <td class="num">{{ item.price }} ed</td>
-                    <td class="num">{{ item.total_price }} ed</td>
-                </tr>
-            {% endwith %}
-        {% endfor %}
-        <tr class="total">
-            <td>Total</td>
-            <td colspan="4"></td>
-            <td class="num">{{ basket.get_total_price }} ed</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="basket_list">
+        {% include 'inc_basket_list.html' %}
+    </div>
     {%else%}
     <p>no items to display</p>
     {%endif%}
