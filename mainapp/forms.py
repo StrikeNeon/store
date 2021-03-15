@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 
 class user_form(forms.ModelForm):
+    email = forms.EmailField(max_length=200, help_text='Required')
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta():

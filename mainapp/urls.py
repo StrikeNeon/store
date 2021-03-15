@@ -35,4 +35,5 @@ urlpatterns = [
     path('cart_remove/<int:product_id>', views.cart_remove, name='cart_remove'),
     path('cart_detail/create/', views.order_create, name='order_create'),
     path('register/', views.register, name='register'),
+    path('activate/<str:uidb64>/<str:token>/', views.activate, name='activate'),
 ]

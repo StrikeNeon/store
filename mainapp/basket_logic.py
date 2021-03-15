@@ -11,7 +11,6 @@ class basket(object):
         Initialise shopping cart obj.
         """
         self.session = request.session
-        # don't forget to comment out the rest of debug stuff (some was in banner.py I think)
         cart = self.session.get(settings.CART_SESSION_ID)  # refers to the session stored in the settings.py
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}  # or an empty dict if it doesn't exist
@@ -37,7 +36,7 @@ class basket(object):
     def save(self):
         # Updating cart session
         self.session[settings.CART_SESSION_ID] = self.cart
-        # mark as modified to make sure it's saved (raise an exception if it wasn't?)
+        # mark as modified to make sure it's saved
         self.session.modified = True
 
     def remove(self, product):

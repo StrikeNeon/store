@@ -7,7 +7,12 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .tokens import account_activation_token
+from django.utils.encoding import force_bytes, force_text
+from django.contrib.auth.models import User
 
 from .models import brand, merch, order_item, review
 from os import getcwd, path
@@ -120,7 +125,8 @@ def register(request):
         form = user_form(data=request.POST)
         profile_form = user_profile_info_form(data=request.POST)
         if form.is_valid() and profile_form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_active = False
             user.set_password(user.password)
             user.save()
             profile = profile_form.save(commit=False)
@@ -128,9 +134,21 @@ def register(request):
             if 'profile_pic' in request.FILES:
                 profile.profile_pic = request.FILES['profile_pic']
             profile.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your shop account.'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
             registered = True
-        else:
-            print(form.errors, profile_form.errors)
+            return HttpResponse('Please confirm your email address to complete the registration')
     else:
         form = user_form()
         profile_form = user_profile_info_form()
@@ -144,8 +162,21 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('mainapp:frontpage'))
 
-# this is a dumb way to do it
-# make a REST API for shop metrics
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        # return redirect('home')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 
 # -------------------INDEX PAGE SECTION-------------------------------------
@@ -224,8 +255,6 @@ def product_detail(request, product_id):
 
 def about_page(request):
     # this is an empty template and only has 2 variables
-    # (so, like, 'partnered with x brands', 'selling y products',
-    #  but dynamic and all that jazz)
     merch_count = merch.objects.all().count()
     brand_count = brand.objects.all().count()
     context = {'merch_count': merch_count, 'brand_count': brand_count}
