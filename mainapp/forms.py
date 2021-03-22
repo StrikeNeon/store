@@ -17,7 +17,7 @@ class user_profile_info_form(forms.ModelForm):
 
     class Meta():
         model = user_profile_info
-        fields = ('profile_pic',)
+        fields = ('profile_pic','age','gender')
 
 
 class login_form(forms.Form):

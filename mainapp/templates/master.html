@@ -70,6 +70,7 @@ div.new_line{
 		{% if user.is_authenticated %}
 		<a href="{% url 'mainapp:logout' %}">Logout</a>
 		<a href="{% url 'mainapp:cart_detail' %}">Cart</a>
+		<a href="{% url 'mainapp:edit_profile' %}">edit profile</a>
 		{% else %}
 		<a href="{% url 'mainapp:login' %}">Login</a>
 		<a href="{% url 'mainapp:register' %}">Register</a>

@@ -16,6 +16,7 @@ from .forms import (login_form, user_profile_info_form,
                     order_create_form, review_form,
                     search_form)
 from . import basket_logic
+from django.db import transaction
 
 
 def construct_path():
@@ -127,7 +128,19 @@ def register(request):
             profile.user = user
             if 'profile_pic' in request.FILES:
                 profile.profile_pic = request.FILES['profile_pic']
-            profile.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your shop account.'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
             registered = True
         else:
             print(form.errors, profile_form.errors)
@@ -144,11 +157,45 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('mainapp:frontpage'))
 
-# this is a dumb way to do it
-# make a REST API for shop metrics
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 
-# -------------------INDEX PAGE SECTION-------------------------------------
+@transaction.atomic
+def edit(request):
+    title = 'profile edit'
+
+    if request.method == 'POST':
+        profile_form = user_profile_info_form(request.POST,
+                                              instance=request.user.user_profile_info)
+        if profile_form.is_valid():
+            profile_form.save()
+            return HttpResponseRedirect(reverse('mainapp:edit_profile'))
+    else:
+        profile_form = user_profile_info_form(
+            instance=request.user.user_profile_info
+        )
+
+    content = {
+        'title': title,
+        'profile_form': profile_form
+    }
+
+    return render(request, 'edit.html', content)
+
+# -------------------PAGES SECTION--------------------------------------------
 class index(ListView):
     model = merch
     ordering = ['-publish_date']

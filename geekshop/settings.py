@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -103,6 +104,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'AIzaSyBuTr0ufMAsJ5CcumlabSPgnpS9JUE_xc8'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'zECJHkvAvmxeMJ0uDG7IpaK_'
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
