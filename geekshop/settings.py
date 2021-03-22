@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
+import os, json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -106,10 +106,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.vk.VKOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'AIzaSyBuTr0ufMAsJ5CcumlabSPgnpS9JUE_xc8'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '700714210931-958c5spiq8o2vtingln6stqbv7hqral6.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'zECJHkvAvmxeMJ0uDG7IpaK_'
 
 LOGIN_URL = '/auth/login/google-oauth2/'
