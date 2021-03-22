@@ -3,6 +3,7 @@
 {% extends "master.html" %}
 {% block title %}Log-in{% endblock %}
 {% block content %}
+<script src="https://vk.com/js/api/openapi.js?168" type="text/javascript"></script>
       <h1>Login here :</h1>
 <form method="post" action="{% url 'mainapp:login' %}">
           {% csrf_token %}
@@ -11,10 +12,16 @@
           <input type="text" name="username" placeholder="Username">
           <label for="password">Password:</label>
           <input type="password" name="password" placeholder="Password">
-
-          <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+          <button class="btn btn-round form-control">
+          <a href="{% url 'social:begin' 'google-oauth2' %}">
         google+ Login
       </a>
+      </button>
+      <button class="btn btn-round form-control">
+    <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">
+     Вход через ВКонтакте 
+    </a>
+    </button>
 <input type="submit" name="" value="Login">
 </form>
 </div>
