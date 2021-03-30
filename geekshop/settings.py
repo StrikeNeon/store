@@ -48,8 +48,8 @@ except FileNotFoundError:
     SOCIAL_AUTH_VK_OAUTH2_KEY = os.environ['SOCIAL_AUTH_VK_OAUTH2_KEY']
     SOCIAL_AUTH_VK_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_VK_OAUTH2_SECRET']
 
-    EMAIL_ADDR = os.environ['EMAIL_ADDR']
-    EMAIL_PASS = os.environ['EMAIL_PASS']
+    EMAIL_ADDRESS = os.environ['EMAIL_ADDRESS']
+    EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
 
     DB_NAME = os.environ['DB_NAME']
     DB_USERNAME = os.environ['DB_USERNAME']
