@@ -24,7 +24,7 @@ SECRET_KEY = 'z*&_tq-z-kb$-k@mq5hhta%ouh8eqsfivc)lbe6$&x1h8xba=f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.10', "127.0.0.1"]
+ALLOWED_HOSTS = ['192.168.1.10', "127.0.0.1", ""]
 
 
 # Application definition
@@ -126,7 +126,14 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/admin/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-print(STATIC_ROOT, MEDIA_ROOT)
-print(os.listdir(STATIC_ROOT))
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
+if EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend':
+    EMAIL_FILE_PATH = "mail" #  debug "mail" - writes files instead of sending
+else: #  configure host here
+    EMAIL_HOST = 'localhost'
+    EMAIL_PORT = '25'
+    EMAIL_HOST_USER = 'django@geekshop.local'
+    EMAIL_HOST_PASSWORD = 'geekshop'
+    EMAIL_USE_SSL = False
 
