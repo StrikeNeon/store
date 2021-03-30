@@ -1,4 +1,5 @@
 django
+social_django
 gunicorn
 django-heroku
 psycopg2
