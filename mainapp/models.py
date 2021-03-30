@@ -2,11 +2,34 @@
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class user_profile_info(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+
+    GENDER_CHOICES = (
+        (MALE, 'M'),
+        (FEMALE, 'F'),
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
+    age = models.PositiveIntegerField(verbose_name='age', null=True, blank=True,
+                                      validators=[MaxValueValidator(100)])
+    gender = models.CharField(verbose_name='gender', max_length=1,
+                              choices=GENDER_CHOICES, null=True, blank=True)
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            user_profile_info.objects.create(user=instance)
+
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.user_profile_info.save()
 
     def __str__(self):
         return self.user.Username

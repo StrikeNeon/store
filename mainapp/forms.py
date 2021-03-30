@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class user_form(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-
+    email = forms.EmailField(max_length=200, help_text='Required')
     class Meta():
         model = User
         fields = ('username', 'password', 'email')
@@ -17,7 +17,7 @@ class user_profile_info_form(forms.ModelForm):
 
     class Meta():
         model = user_profile_info
-        fields = ('profile_pic',)
+        fields = ('profile_pic', 'age', 'gender')
 
 
 class login_form(forms.Form):

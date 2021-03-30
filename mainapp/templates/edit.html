@@ -1,0 +1,15 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <form class="form-horizontal" action="{% url 'mainapp:edit_profile' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <input class="form-control" type="submit" value="save">
+    </form>
+    <button class="btn btn-round form-control last">
+        <a href="{% url 'mainapp:frontpage' %}" class="">
+            return to main page
+        </a>
+    </button>
+    <div class="user_avatar"><img src="/media/{{ user.avatar }}"></div>
+{% endblock %}
