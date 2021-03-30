@@ -57,7 +57,7 @@ except FileNotFoundError:
     DB_HOST = os.environ['DB_HOST']
     DB_PORT = os.environ['DB_PORT']
 
-    DEBUG = False
+    DEBUG = True
 
 
 ALLOWED_HOSTS = ["*"]
