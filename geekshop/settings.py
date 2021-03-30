@@ -24,22 +24,45 @@ try:
         secret_keys = json.load(f)
 
     SECRET_KEY = secret_keys['SECRET_KEY']
+
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
     SOCIAL_AUTH_VK_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_VK_OAUTH2_KEY']
     SOCIAL_AUTH_VK_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+
+    EMAIL_ADDRESS = secret_keys['EMAIL_ADDRESS']
+    EMAIL_PASSWORD = secret_keys['EMAIL_PASSWORD']
+
+    DB_NAME = secret_keys['DB_NAME']
+    DB_USERNAME = secret_keys['DB_USERNAME']
+    DB_PASSWORD = secret_keys['DB_PASSWORD']
+    DB_HOST = secret_keys['DB_HOST']
+    DB_PORT = secret_keys['DB_PORT']
+
     DEBUG = True
 except FileNotFoundError:
     SECRET_KEY = os.environ['SECRET_KEY']
+
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
     SOCIAL_AUTH_VK_OAUTH2_KEY = os.environ['SOCIAL_AUTH_VK_OAUTH2_KEY']
     SOCIAL_AUTH_VK_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+
+    EMAIL_ADDR = os.environ['EMAIL_ADDR']
+    EMAIL_PASS = os.environ['EMAIL_PASS']
+
+    DB_NAME = os.environ['DB_NAME']
+    DB_USERNAME = os.environ['DB_USERNAME']
+    DB_PASSWORD = os.environ['DB_PASSWORD']
+    DB_HOST = os.environ['DB_HOST']
+    DB_PORT = os.environ['DB_PORT']
+
     DEBUG = False
 
 
 ALLOWED_HOSTS = ["*"]
 
+DOMAINS = "https://test-store-a.herokuapp.com/"
 
 # Application definition
 
@@ -97,11 +120,18 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USERNAME,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+    },
+    'local': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -172,5 +202,17 @@ STATIC_URL = '/static/admin/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/admin/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+if EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend':
+    EMAIL_FILE_PATH = "mail" #  debug "mail" - writes files instead of sending
+else: #  configure host here
+    EMAIL_USE_SSL = True
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 465
+    EMAIL_HOST_USER = EMAIL_ADDRESS
+    EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+    DEFAULT_FROM_EMAIL = EMAIL_ADDRESS
 
 django_heroku.settings(locals())

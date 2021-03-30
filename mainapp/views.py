@@ -7,16 +7,22 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.db import transaction
 
-
+from .tokens import account_activation_token
 from .models import brand, merch, order_item, review
-from os import getcwd, path
 from .forms import (login_form, user_profile_info_form,
                     user_form, cart_add_product_form,
                     order_create_form, review_form,
                     search_form)
 from . import basket_logic
-from django.db import transaction
+
+from os import getcwd, path
 
 
 def construct_path():
@@ -196,6 +202,8 @@ def edit(request):
     return render(request, 'edit.html', content)
 
 # -------------------PAGES SECTION--------------------------------------------
+
+
 class index(ListView):
     model = merch
     ordering = ['-publish_date']
