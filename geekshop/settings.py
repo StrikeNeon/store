@@ -19,19 +19,24 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-with open('geekshop/keys.json', 'r') as f:
-    secret_keys = json.load(f)
+try:
+    with open('geekshop/keys.json', 'r') as f:
+        secret_keys = json.load(f)
 
-SECRET_KEY = secret_keys['SECRET_KEY']
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
-SOCIAL_AUTH_VK_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_VK_OAUTH2_KEY']
-SOCIAL_AUTH_VK_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+    SECRET_KEY = secret_keys['SECRET_KEY']
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+    SOCIAL_AUTH_VK_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_VK_OAUTH2_KEY']
+    SOCIAL_AUTH_VK_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+    DEBUG = True
+except FileNotFoundError:
+    SECRET_KEY = os.environ['SECRET_KEY']
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+    SOCIAL_AUTH_VK_OAUTH2_KEY = os.environ['SOCIAL_AUTH_VK_OAUTH2_KEY']
+    SOCIAL_AUTH_VK_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+    DEBUG = False
 
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
