@@ -1,5 +1,5 @@
 django
-social_django
+social-auth-app-django
 gunicorn
 django-heroku
 psycopg2
