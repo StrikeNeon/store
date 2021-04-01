@@ -229,7 +229,7 @@ class search(ListView):
         result = super(search, self).get_queryset()
         query = self.request.GET.get('search')
         if query:
-            postresult = merch.objects.filter(Name__contains=query)
+            postresult = merch.objects.filter(name__contains=query)
             result = postresult
         else:
             result = None
