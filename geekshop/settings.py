@@ -23,23 +23,29 @@ try:
     with open('geekshop/keys.json', 'r') as f:
         secret_keys = json.load(f)
 
-    SECRET_KEY = secret_keys['SECRET_KEY']
+        SECRET_KEY = secret_keys['SECRET_KEY']
 
-    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
-    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
-    SOCIAL_AUTH_VK_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_VK_OAUTH2_KEY']
-    SOCIAL_AUTH_VK_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+        SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+        SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+        SOCIAL_AUTH_VK_OAUTH2_KEY = secret_keys['SOCIAL_AUTH_VK_OAUTH2_KEY']
+        SOCIAL_AUTH_VK_OAUTH2_SECRET = secret_keys['SOCIAL_AUTH_VK_OAUTH2_SECRET']
 
-    EMAIL_ADDRESS = secret_keys['EMAIL_ADDRESS']
-    EMAIL_PASSWORD = secret_keys['EMAIL_PASSWORD']
+        EMAIL_ADDRESS = secret_keys['EMAIL_ADDRESS']
+        EMAIL_PASSWORD = secret_keys['EMAIL_PASSWORD']
 
-    DB_NAME = secret_keys['DB_NAME']
-    DB_USERNAME = secret_keys['DB_USERNAME']
-    DB_PASSWORD = secret_keys['DB_PASSWORD']
-    DB_HOST = secret_keys['DB_HOST']
-    DB_PORT = secret_keys['DB_PORT']
+        DB_NAME = secret_keys['DB_NAME']
+        DB_USERNAME = secret_keys['DB_USERNAME']
+        DB_PASSWORD = secret_keys['DB_PASSWORD']
+        DB_HOST = secret_keys['DB_HOST']
+        DB_PORT = secret_keys['DB_PORT']
+
+        AWS_ACCESS_KEY_ID = secret_keys['S3_KEY']
+        AWS_SECRET_ACCESS_KEY = secret_keys['S3_SECRET']
+        AWS_STORAGE_BUCKET_NAME = secret_keys['S3_BUCKET']
+        AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
     DEBUG = True
+
 except FileNotFoundError:
     SECRET_KEY = os.environ['SECRET_KEY']
 
@@ -57,7 +63,12 @@ except FileNotFoundError:
     DB_HOST = os.environ['DB_HOST']
     DB_PORT = os.environ['DB_PORT']
 
-    DEBUG = True
+    AWS_ACCESS_KEY_ID = os.environ['S3_KEY']
+    AWS_SECRET_ACCESS_KEY = os.environ['S3_SECRET']
+    AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET']
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+    DEBUG = False
 
 
 ALLOWED_HOSTS = ["*"]
@@ -75,6 +86,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'storages',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -194,14 +206,30 @@ USE_L10N = True
 
 USE_TZ = True
 
+AWS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/admin/'
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/admin/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if not AWS:
+    STATIC_URL = '/static/admin/'
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static/admin/')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+else:
+    AWS_S3_OBJECT_PARAMETERS = {
+            'CacheControl': 'max-age=86400',
+    }
+    AWS_DEFAULT_ACL = None
+    STATIC_LOCATION = 'static'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+
+    MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'geekshop.storage_backends.MediaStorage'
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
