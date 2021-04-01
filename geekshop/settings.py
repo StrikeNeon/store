@@ -68,7 +68,7 @@ except FileNotFoundError:
     AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET']
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
-    DEBUG = True
+    DEBUG = False
 
 
 ALLOWED_HOSTS = ["*"]
