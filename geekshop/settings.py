@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os, json
+import os
+import json
 import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -78,7 +79,7 @@ DOMAINS = "https://test-store-a.herokuapp.com/"
 # Application definition
 
 INSTALLED_APPS = [
-    'mainapp.apps.mainappconfig',    
+    'mainapp.apps.mainappconfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -234,8 +235,8 @@ else:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 if EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend':
-    EMAIL_FILE_PATH = "mail" #  debug "mail" - writes files instead of sending
-else: #  configure host here
+    EMAIL_FILE_PATH = "mail"  # debug "mail" - writes files instead of sending
+else:  # configure host here
     EMAIL_USE_SSL = True
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = 465

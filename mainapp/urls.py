@@ -19,22 +19,51 @@ from . import views
 
 app_name = 'mainapp'
 urlpatterns = [
-    path('', views.index.as_view(), name='frontpage'),
+    path('',
+         views.index.as_view(), name='frontpage'),
 
-    path('search/', views.search.as_view(), name='search'),
-    
-    path('<int:product_id>/', views.product_detail, name='product_detail'),
-    path('brands/', views.brand_list.as_view(), name='brands'),
-    path('about/', views.about_page, name='about'),
-    path('login/', views.user_login, name='login'),
-    path('logout/', views.user_logout, name='logout'),
-    path('cart_detail/', views.cart_detail, name='cart_detail'),
-    path('add/<int:pk>/<int:quantity>/', views.basket_edit, name='cart_edit'),
-    path('review_add/<int:product_id>/', views.review_add, name='review_add'),
-    path('cart_add/<int:product_id>', views.cart_add, name='cart_add'),
-    path('cart_remove/<int:product_id>', views.cart_remove, name='cart_remove'),
-    path('cart_detail/create/', views.order_create, name='order_create'),
-    path('register/', views.register, name='register'),
-    path('edit_profile/', views.edit, name='edit_profile'),
-    path('activate/<str:uidb64>/<str:token>/', views.activate, name='activate'),
+    path('search/',
+         views.search.as_view(), name='search'),
+
+    path('<int:product_id>/',
+         views.product_detail, name='product_detail'),
+
+    path('brands/',
+         views.brand_list.as_view(), name='brands'),
+
+    path('about/',
+         views.about_page, name='about'),
+
+    path('login/',
+         views.user_login, name='login'),
+
+    path('logout/',
+         views.user_logout, name='logout'),
+
+    path('cart_detail/',
+         views.cart_detail, name='cart_detail'),
+
+    path('add/<int:pk>/<int:quantity>/',
+         views.basket_edit, name='cart_edit'),
+
+    path('review_add/<int:product_id>/',
+         views.review_add, name='review_add'),
+
+    path('cart_add/<int:product_id>',
+         views.cart_add, name='cart_add'),
+
+    path('cart_remove/<int:product_id>',
+         views.cart_remove, name='cart_remove'),
+
+    path('cart_detail/create/',
+         views.order_create, name='order_create'),
+
+    path('register/',
+         views.register, name='register'),
+
+    path('edit_profile/',
+         views.edit, name='edit_profile'),
+
+    path('activate/<str:uidb64>/<str:token>/',
+         views.activate, name='activate'),
 ]

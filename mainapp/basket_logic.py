@@ -11,10 +11,10 @@ class basket(object):
         Initialise shopping cart obj.
         """
         self.session = request.session
-        # don't forget to comment out the rest of debug stuff (some was in banner.py I think)
-        cart = self.session.get(settings.CART_SESSION_ID)  # refers to the session stored in the settings.py
+        # cart refers to the session id
+        cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
-            cart = self.session[settings.CART_SESSION_ID] = {}  # or an empty dict if it doesn't exist
+            cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
     def add(self, product, quantity=1, update_quantity=False):
@@ -23,21 +23,20 @@ class basket(object):
         """
         product_id = str(product.id)
         if product_id not in self.cart:
-            # ! don't remove conversion to str, it breaks the cart entierly, it has to do with form vlaues being strings !
+            # !conversion from string values as passed by form
             self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price)}  # inner dict for saving quantity and price
+                                     'price': str(product.price)}
         if update_quantity:
-            # if quantity is one use default 'case'
+            # if quantity is one use default case
             self.cart[product_id]['quantity'] = quantity
         else:
-            # or add the quantity value if the clienc chooses more than one
             self.cart[product_id]['quantity'] += quantity
         self.save()
 
     def save(self):
         # Updating cart session
         self.session[settings.CART_SESSION_ID] = self.cart
-        # mark as modified to make sure it's saved (raise an exception if it wasn't?)
+        # mark as modified to make sure it's saved
         self.session.modified = True
 
     def remove(self, product):
@@ -46,7 +45,7 @@ class basket(object):
         """
         product_id = str(product.id)
         if product_id in self.cart:
-            del self.cart[product_id]  # deletes the k:v pair
+            del self.cart[product_id]
             self.save()
 
     def __iter__(self):

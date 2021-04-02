@@ -10,22 +10,22 @@ class user_profile_info(models.Model):
     MALE = 'M'
     FEMALE = 'F'
 
-    GENDER_CHOICES = (
+    gender_choices = [
         (MALE, 'M'),
         (FEMALE, 'F'),
-    )
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
-    age = models.PositiveIntegerField(verbose_name='age', null=True, blank=True,
+    age = models.PositiveIntegerField(verbose_name='age',
+                                      null=True, blank=True,
                                       validators=[MaxValueValidator(100)])
     gender = models.CharField(verbose_name='gender', max_length=1,
-                              choices=GENDER_CHOICES, null=True, blank=True)
+                              choices=gender_choices, null=True, blank=True)
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             user_profile_info.objects.create(user=instance)
-
 
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
@@ -69,7 +69,7 @@ class merch(models.Model):
         return self.name
 
 
-class order(models.Model): 
+class order(models.Model):
     # order is the client's contacts, OrderItem is what the client ordered
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
