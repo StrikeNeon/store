@@ -26,5 +26,10 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('social_django.urls', namespace='social')),
     path('logout/', LogoutView, {'next_page': settings.LOGOUT_REDIRECT_URL},
-    name='logout'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+         name='logout'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

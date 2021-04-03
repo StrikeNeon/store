@@ -14,9 +14,9 @@
             <input name="{{ product.id }}"type="number" class="form-control"
                                 value="{{ item.quantity }}" min="0">
             <span class="product_cost">{{ product.price }} ed</span>
-            <button class="btn btn-round">
+            <a href="/cart_remove/{{ product.id }}/">
             remove item
-            </button>
+            </a>
         </div>
     {% endwith %}
     
@@ -25,6 +25,6 @@
 {% if basket %}
     <div class="basket_summary">
         items in total {{ basket.get_total_quantity }}
-        {{ basket.get_total_price }} ed
+        {{ basket.get_total_price }} $
     </div>
 {% endif %}

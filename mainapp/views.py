@@ -43,8 +43,8 @@ def cart_add(request, product_id):
         cd = form.cleaned_data
         # the cd will return all of the form objects as strings !REMEMBER THAT!
         basket.add(product=product,  # calling the add method
-                   quantity=cd['quantity'],
-                   update_quantity=cd['update'])
+                   quantity=cd.get('quantity'),
+                   update_quantity=cd.get('update'))
     return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
 
@@ -87,9 +87,9 @@ def order_create(request):
             order = form.save()
             for item in basket:
                 order_item.objects.create(order=order,
-                                          product=item['product'],
-                                          price=item['price'],
-                                          quantity=item['quantity'])
+                                          product=item.get('product'),
+                                          price=item.get('price'),
+                                          quantity=item.get('quantity'))
 
             basket.clear()
             return render(request, 'ordered.html',
@@ -106,8 +106,8 @@ def user_login(request):
         form = login_form(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(username=cd['username'],
-                                password=cd['password'])
+            user = authenticate(username=cd.get('username'),
+                                password=cd.get('password'))
             if user is not None:
                 if user.is_active:
                     login(request, user)
@@ -133,7 +133,7 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             if 'profile_pic' in request.FILES:
-                profile.profile_pic = request.FILES['profile_pic']
+                profile.profile_pic = request.FILES.get('profile_pic')
             current_site = get_current_site(request)
             mail_subject = 'Activate your shop account.'
             message = render_to_string('acc_active_email.html', {
@@ -173,7 +173,8 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        login(request, user,
+              backend='django.contrib.auth.backends.ModelBackend')
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')

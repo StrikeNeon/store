@@ -6,6 +6,7 @@
     <title>Cart</title>
 {% endblock %}
 {% block content %}
+
     <h1>Your shopping cart</h1>
     {%if basket%}
     <div class="basket_list">
@@ -18,4 +19,5 @@
         <a href="{% url 'mainapp:frontpage' %}" class="button light">Continue shopping</a>
         <a href="{% url "mainapp:order_create" %}" class="button"> Place order </a>
     </p>
+
 {% endblock %}

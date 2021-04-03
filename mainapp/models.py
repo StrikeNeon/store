@@ -26,7 +26,6 @@ class user_profile_info(models.Model):
         if created:
             user_profile_info.objects.create(user=instance)
 
-
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
         instance.user_profile_info.save()
@@ -69,7 +68,7 @@ class merch(models.Model):
         return self.name
 
 
-class order(models.Model): 
+class order(models.Model):
     # order is the client's contacts, OrderItem is what the client ordered
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

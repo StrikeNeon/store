@@ -3,3 +3,4 @@ __pycache__
 Supeuser_creds.txt
 *.json
 *.log
+staticfiles
