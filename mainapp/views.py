@@ -79,6 +79,7 @@ def basket_edit(request, pk, quantity):
         return JsonResponse({'result': result})
 
 
+@transaction.atomic
 def order_create(request):
     basket = basket_logic.basket(request)
     if request.method == 'POST':
@@ -121,6 +122,7 @@ def user_login(request):
     return render(request, 'login.html', {'form': form})
 
 
+@transaction.atomic
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -213,9 +215,14 @@ class index(ListView):
     context_object_name = 'product'
     form = search_form()
 
+    def get_queryset(self):
+        queryset = merch.objects.all().select_related('brand')
+        return queryset
+
     def get_context_data(self):
         context = super().get_context_data()
-        context['products'] = merch.objects.all()
+        context['products'] = self.get_queryset()
+
         return context
 
 
@@ -250,6 +257,7 @@ class brand_list(ListView):
         return context
 
 
+@transaction.atomic
 def review_add(request, product_id):
     form = review_form(request.POST)
     if form.is_valid():
@@ -266,12 +274,13 @@ def review_add(request, product_id):
 def product_detail(request, product_id):
     product = get_object_or_404(merch, pk=product_id,)
     cart_product_form = cart_add_product_form()
-    review_list = review.objects.filter(product=product_id)[:5]
+    reviews = review.objects.filter(product=product_id)
+    review_list = reviews[:5]
     form = review_form()
     context = {'product': product, 'cart_product_form': cart_product_form,
                'review_form': form, 'review_list': review_list}
     if review_list:
-        review_avg = round(review.objects.filter(product=product_id).aggregate(Avg('rating'))['rating__avg'], 2)
+        review_avg = round(reviews.aggregate(Avg('rating'))['rating__avg'], 2)
         context['rating'] = review_avg
     else:
         pass

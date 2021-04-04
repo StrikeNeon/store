@@ -16,7 +16,7 @@ import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+ADMINS = [("Anon", "SjasFaceMD@Gmail.com")]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -47,7 +47,9 @@ try:
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 except FileNotFoundError:
-    DEBUG = False
+
+    #  TODO figure out why the server fails with debug set to false
+    DEBUG = True
 
     SECRET_KEY = os.environ['SECRET_KEY']
 
@@ -76,21 +78,33 @@ ALLOWED_HOSTS = ["*"]
 DOMAINS = "https://test-store-a.herokuapp.com/"
 
 # Application definition
+if DEBUG:
+    INSTALLED_APPS = [
+        'mainapp.apps.mainappconfig',
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'social_django',
+        'storages',
+        'debug_toolbar',
+        'template_profiler_panel'
 
-INSTALLED_APPS = [
-    'mainapp.apps.mainappconfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'social_django',
-    'storages',
-    'debug_toolbar',
-    'template_profiler_panel',
-
-]
+    ]
+else:
+    INSTALLED_APPS = [
+        'mainapp.apps.mainappconfig',
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'social_django',
+        'storages'
+    ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
@@ -138,6 +152,7 @@ if DEBUG:
 else:
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware', 
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
@@ -255,7 +270,7 @@ AWS = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 if not AWS:
-    STATIC_URL = '/static/'
+    STATIC_URL = '/staticfiles/'
     MEDIA_URL = '/media/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -266,7 +281,8 @@ else:
     }
     AWS_DEFAULT_ACL = None
     STATIC_LOCATION = 'static'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3ManifestStaticStorage'
+
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
 
     MEDIA_LOCATION = 'media'

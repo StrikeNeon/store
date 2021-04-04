@@ -14,10 +14,13 @@ def change():
         ecxept it uses cumulatives, not relatives
         no one will probably see this though, it's just a banner tag :(
     '''
-    bannerid = list(banner.objects.values_list('id', flat=True))
-    subs = list(banner.objects.values_list('subscribed', flat=True))
+    banners = banner.objects.all()
+    bannerid = [choice.id for choice in banners]
+    subs = [choice.subscribed for choice in banners]
     weights = accumulate(subs)
-    return choices(bannerid, weights, k=1)[0]
+    winrar = choices(bannerid, weights, k=1)[0]
+    result = banner.objects.get(id=winrar)
+    return result
 
 
 register = template.Library()
@@ -26,7 +29,7 @@ register = template.Library()
 @register.inclusion_tag(path.join(construct_path(), 'banner.html'))
 def big_banner():
     try:
-        banners = banner.objects.get(id=change())
+        banners = change()
         return {'banners': banners}
     except IndexError:
         return None

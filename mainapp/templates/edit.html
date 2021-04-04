@@ -12,6 +12,7 @@
             return to main page
         </a>
     </button>
-    <div class="user_avatar"><img src="/media/{{ user.avatar }}"></div>
-
+    {% if user.user.avatar %}
+        <div class="user_avatar"><img src="/media/{{ user.avatar }}"></div>
+    {%endif%}
 {% endblock %}
