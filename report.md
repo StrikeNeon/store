@@ -26,76 +26,20 @@ though it very well might be hosting related and not the issue of the site.
 
 ### raw data: debug toolbar
 
-#### index
-* page loading (initial) = 2s
-* sql queries (9 made/4 similar /4 dupes) = ~600ms
-* templates = 1s
-
-* page loading after optimisation = 1471.22ms
-* sql queries(5/0/0) = 354.87 ms
-* templates = 602.56ms
-
-#### product detail
-
-* page loading = 1044.51ms
-* sql queries (5/0/0) = 333.59ms
-* templates = 298.67ms
-
-#### brands
-
-* page loading = 985.34ms
-* sql queries (4/0/0) = 279.31 ms
-* templates = 343.0ms
-
-#### about
-
-* page loading = 935.51ms
-* sql queries (4/0/0) = 276.41 ms
-* templates = 216.3ms
-
-#### register
-
-* page loading = 765.86ms
-* sql queries (4/0/0) = 140.90 ms
-* templates = 736.4ms
-
-#### login
-
-* page loading = 797.32ms
-* sql queries (4/0/0) = 144.64 ms
-* templates = 746.5ms
-
-#### index after login
-
-* page loading = 794.80 ms
-* sql queries (7/0/0) = 144.64 ms
-* templates = 977.4ms
-
-#### profile editing
-
-* page loading = 1252.46ms
-* sql queries (5/0/0) = 419.41 ms
-* templates = 362.4ms
-
-#### cart (empty)
-
-* page loading = 959.96ms
-* sql queries (4/0/0) = 282.78 ms
-* templates = 921.1ms
-
-#### cart (with items)
-
-* page loading = 1135.34ms
-* sql queries (5/0/0) = 352.71 ms
-* templates = 1057.6ms
-
-#### order
-
-* page loading = 1059.40ms
-* sql queries (5/0/0) = 337.64 ms
-* templates = 1012.5ms
-
-
+| Page                          | page loading | sql queries time | sql queries made | similar sql queries | dupe sql queries |templates  |
+|-------------------------------|--------------|------------------|------------------|---------------------|------------------|-----------|
+| index (initial)               | 2 s          | ~600ms           | 9                | 4                   |4                 | 1 s       |
+| index (after optimisation)    | 1471.22 ms    | 354.87 ms       | 5                | 0                   |0                 | 602.56 ms |
+| product detail                | 1044.51 ms    | 333.59 ms       | 5                | 0                   |0                 | 298.67 ms |
+| brands                        | 985.34 ms     | 279.31 ms       | 4                | 0                   |0                 | 343.0 ms  |
+| about                         | 935.51 ms     | 276.41 ms       | 4                | 0                   |0                 | 216.3 ms  |
+| register                      | 765.86 ms     | 140.90 ms       | 4                | 0                   |0                 | 736.4 ms  |
+| login                         | 797.32 ms     | 144.64 ms       | 4                | 0                   |0                 | 746.5 ms  |
+| index after login             | 1471.22 ms    | 354.87 ms       | 7                | 0                   |0                 | 977.4 ms  |
+| profile editing               | 1252.46 ms    | 419.41 ms       | 5                | 0                   |0                 | 362.4 ms  |
+| cart (empty)                  | 959.96 ms     | 282.78 ms       | 4                | 0                   |0                 | 921.1 ms  |
+| cart (with items)             | 1135.34 ms    | 352.71 ms       | 4                | 0                   |0                 | 1057.6 ms |
+| order                         | 1059.40 ms    | 337.64 ms       | 4                | 0                   |0                 | 1012.5 ms |
 
 ### raw data:SIEGE
 
