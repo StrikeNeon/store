@@ -89,6 +89,7 @@ if DEBUG:
         'django.contrib.staticfiles',
         'social_django',
         'storages',
+        'django_extensions',
         'debug_toolbar',
         'template_profiler_panel'
 
@@ -152,7 +153,7 @@ if DEBUG:
 else:
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
-        'whitenoise.middleware.WhiteNoiseMiddleware', 
+        'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
