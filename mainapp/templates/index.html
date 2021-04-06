@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% extends "master.html" %}
-{% load static %}
+{% load cache %}
 
 {% block title %}
 	<div class="index">
@@ -23,13 +23,15 @@
 	<table>
 	    {% for product in page_obj  %}
 	    <tr>
-	        <td><a href="/{{ product.id }}/">{{ product.name }}</a></td>
-	        <td><img src="{{product.picture.url}}" class="img-responsive" style="width: 15%; "></td>
+		{%with id=product.id name=product.name pic=product.picture.url usage=product.usage brand=product.brand price=product.price%}
+	        <td><a href="/{{ id }}/">{{ name }}</a></td>
+	        <td><img src="{{pic}}" class="img-responsive" style="width: 15%; "></td>
 	        </img>
-	        <td> {{ product.usage }}</td>
-	        <td> {{ product.brand }}</td>
-	        <td> {{ product.price }} $</td>
+	        <td> {{ usage }}</td>
+	        <td> {{ brand }}</td>
+	        <td> {{ price }} $</td>
 	    </tr>
+		{%endwith%}
 	    {% endfor %}
 	</table>
 	</div>

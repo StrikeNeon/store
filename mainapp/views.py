@@ -69,8 +69,11 @@ def cart_remove(request, product_id):
         return JsonResponse({'result': result})
 
 
-@cache_page(CACHE_TTL)
 def cart_detail(request):  # it just calls the basket and renders
+    basket = cache.get(request.session)
+    if not basket:
+        basket = basket_logic.basket(request)
+        cache.set(request.session, basket, CACHE_TTL)
     basket = basket_logic.basket(request)
     return render(request, 'basket.html', {'basket': basket})
 

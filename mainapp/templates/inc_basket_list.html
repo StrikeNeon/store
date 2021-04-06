@@ -1,5 +1,4 @@
 {% load static %}
-
 {% for item in basket %}
     {% with product=item.product %}
         <div class="basket_record">
@@ -13,7 +12,7 @@
             <span class="category_name">{{ product.usage }}</span> 
             <input name="{{ product.id }}"type="number" class="form-control"
                                 value="{{ item.quantity }}" min="0">
-            <span class="product_cost">{{ product.price }} ed</span>
+            <span class="product_cost">{{ product.price }} $</span>
             <a href="/cart_remove/{{ product.id }}/">
             remove item
             </a>

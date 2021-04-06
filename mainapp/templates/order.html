@@ -12,12 +12,12 @@
         <ul>
             {% for item in cart %}
                 <li>
-                    {{ item.quantity }}x {{ item.product.name }}
-                    <span>{{ item.total_price }} ed</span>
+                    {{ item.quantity }}x{{ item.product.name }}
+                    <span>{{ item.total_price }} $</span>
                 </li>
             {% endfor %}
         </ul>
-        <p>Total: {{ cart.get_total_price }} ed</p>
+        <p>Total: {{ cart.get_total_price }} $</p>
     </div>
     <form action="." method="post" class="order-form">
         {{ form.as_p }}
