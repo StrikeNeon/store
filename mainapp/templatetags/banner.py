@@ -5,16 +5,24 @@ from mainapp.views import construct_path
 from os import path
 from itertools import accumulate
 from random import choices
+from django.core.cache import cache
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 def change():
     '''
-    This seems stupid, BUT if you want to incentivize advertisers to pay more, here's a fair system:
-        the more you pay, the better the chances of their ad showing up, you need a weighted choice for that,
-        ecxept it uses cumulatives, not relatives
-        no one will probably see this though, it's just a banner tag :(
+    the more you pay, the better the chances of their ad showing up, you need
+    a weighted choice for that,
+    ecxept it uses cumulatives, not relatives
+    no one will probably see this though, it's just a banner tag :(
     '''
-    banners = banner.objects.all()
+    banners = cache.get('banners')
+    if not banners:
+        banners = banner.objects.all()
+        cache.set("banners", banners, CACHE_TTL)
     bannerid = [choice.id for choice in banners]
     subs = [choice.subscribed for choice in banners]
     weights = accumulate(subs)

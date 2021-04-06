@@ -46,6 +46,8 @@ try:
         AWS_STORAGE_BUCKET_NAME = secret_keys['S3_BUCKET']
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
+        REDIS_LOCATION = secret_keys['REDIS_LOCATION']
+
 except FileNotFoundError:
 
     #  TODO figure out why the server fails with debug set to false
@@ -71,6 +73,8 @@ except FileNotFoundError:
     AWS_SECRET_ACCESS_KEY = os.environ['S3_SECRET']
     AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET']
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+    REDIS_LOCATION = os.environ['REDIS_LOCATION']
 
 
 ALLOWED_HOSTS = ["*"]
@@ -104,7 +108,8 @@ else:
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'social_django',
-        'storages'
+        'storages',
+        'django_redis'
     ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -203,6 +208,21 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_LOCATION,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "geekshop"
+    }
+}
+
+# Cache time to live is 15 minutes.
+CACHE_TTL = 60 * 15
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

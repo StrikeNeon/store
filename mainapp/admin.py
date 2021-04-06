@@ -8,7 +8,6 @@ admin.site.register(user_profile_info)
 admin.site.register(banner)
 
 
-
 class order_item_inline(admin.TabularInline):
     model = order_item
     raw_id_fields = ['product']

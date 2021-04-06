@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -13,6 +14,10 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import transaction
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 from .tokens import account_activation_token
 from .models import brand, merch, order_item, review
@@ -31,6 +36,9 @@ def construct_path():
     appPath = path.join(projPath, 'mainapp')
     template_path = path.join(appPath, 'templates')
     return template_path
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 # -----------------------------CART SECTION--------------------------------
@@ -61,6 +69,7 @@ def cart_remove(request, product_id):
         return JsonResponse({'result': result})
 
 
+@cache_page(CACHE_TTL)
 def cart_detail(request):  # it just calls the basket and renders
     basket = basket_logic.basket(request)
     return render(request, 'basket.html', {'basket': basket})
@@ -177,7 +186,8 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user,
               backend='django.contrib.auth.backends.ModelBackend')
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return HttpResponse('Thank you for your email confirmation.\
+                             Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -188,7 +198,8 @@ def edit(request):
 
     if request.method == 'POST':
         profile_form = user_profile_info_form(request.POST,
-                                              instance=request.user.user_profile_info)
+                                              instance=request.user.
+                                              user_profile_info)
         if profile_form.is_valid():
             profile_form.save()
             return HttpResponseRedirect(reverse('mainapp:edit_profile'))
@@ -209,14 +220,16 @@ def edit(request):
 
 class index(ListView):
     model = merch
-    ordering = ['-publish_date']
     paginate_by = 5
     template_name = 'index.html'
     context_object_name = 'product'
     form = search_form()
-
+    
     def get_queryset(self):
-        queryset = merch.objects.all().select_related('brand')
+        queryset = cache.get('products')
+        if not queryset:
+            queryset = merch.objects.all().select_related('brand').order_by('-publish_date')
+            cache.set("products", queryset, CACHE_TTL)
         return queryset
 
     def get_context_data(self):
@@ -246,14 +259,20 @@ class search(ListView):
 
 class brand_list(ListView):
     model = brand
-    ordering = ['-brand_name']
     paginate_by = 5
     template_name = 'brands.html'
     context_object_name = 'brand_list'
 
+    def get_queryset(self):
+        queryset = cache.get('brands')
+        if not queryset:
+            queryset = brand.objects.all().order_by('-brand_name')
+            cache.set("brands", queryset, CACHE_TTL)
+        return queryset
+
     def get_context_data(self):
         context = super().get_context_data()
-        context['brand_list'] = brand.objects.all()
+        context['brand_list'] = self.get_queryset()
         return context
 
 
@@ -271,6 +290,7 @@ def review_add(request, product_id):
                                         args=[product_id]))
 
 
+@cache_page(CACHE_TTL)
 def product_detail(request, product_id):
     product = get_object_or_404(merch, pk=product_id,)
     cart_product_form = cart_add_product_form()
@@ -297,6 +317,7 @@ def about_page(request):
     return render(request, path.join(construct_path(), 'about.html'), context)
 
 
+@cache_page(CACHE_TTL)
 def brand_detail(request, brand_id):
     brand_object = get_object_or_404(brand, pk=brand_id)
     return render(request, 'brand_detail.html', {'brand': brand_object})
