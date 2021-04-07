@@ -95,7 +95,8 @@ if DEBUG:
         'storages',
         'django_extensions',
         'debug_toolbar',
-        'template_profiler_panel'
+        'template_profiler_panel',
+        'django_redis'
 
     ]
 else:
