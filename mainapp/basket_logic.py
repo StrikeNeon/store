@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from decimal import Decimal
 from django.conf import settings
 from .models import merch
 
@@ -69,8 +68,8 @@ class basket(object):
         for product in products:
             self.cart[str(product.id)]['product'] = product
 
-        for item in self.cart.values():  # converts to decimal and get total
-            item['price'] = Decimal(item['price'])
+        for item in self.cart.values():  # converts to int and get total
+            item['price'] = int(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item
 
@@ -84,7 +83,7 @@ class basket(object):
         """
         this calculates the sum of all items
         """
-        return sum(Decimal(item['price']) * item['quantity'] for item in
+        return sum(int(item['price']) * item['quantity'] for item in
                    self.cart.values())
 
     def get_total_quantity(self):
