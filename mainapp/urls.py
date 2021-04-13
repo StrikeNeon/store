@@ -21,6 +21,7 @@ app_name = 'mainapp'
 urlpatterns = [
     path('',
          views.index.as_view(), name='frontpage'),
+
     path('search/',
          views.search.as_view(), name='search'),
 
