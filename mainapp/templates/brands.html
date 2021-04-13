@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 {% extends "master.html" %}
+{% load cache %}
+
 {% block title %}
 	<div class="index">
 	<title>Brand listing</title>
@@ -13,12 +15,14 @@
 	<div class="new_line">
 	<table>
 	    {% for brand in brand_list %}
+		{% with name=brand.brand_name pic=brand.picture.url country=brand.country%}
 	    <tr>
-	        <td> {{ brand.brand_name }}</td>
-	        <td><img src="{{brand.picture.url}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
+	        <td> {{ name }}</td>
+	        <td><img src="{{pic}}" class="img-responsive" style="width: 15%; float: left; margin-right: 15px;"></td>
 	        </img>
-	        <td> {{ brand.country }}</td>
+	        <td> {{ country }}</td>
 	    </tr>
+		{%endwith%}
 	    {% endfor %}
 	</table>
 	</div>
@@ -26,4 +30,3 @@
 	    <p>No brands are available.</p>
 	{% endif %}
  {% endblock %}
-</body>

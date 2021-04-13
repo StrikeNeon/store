@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% extends "master.html" %}
-{% load static %}
 </style>
 {% block title %}
 	<div class="index">
@@ -9,6 +8,7 @@
 {% endblock %}
 
 {% block content %} 
+
 	{% if result %}
 	<div class="new_line">
 	<table>
@@ -19,7 +19,7 @@
 	        </img>
 	        <td> {{ product.usage }}</td>
 	        <td> {{ product.brand }}</td>
-	        <td> {{ product.price }} ed</td>
+	        <td> {{ product.price }} $</td>
 	    </tr>
 	    {% endfor %}
 	</table>
@@ -33,5 +33,5 @@
 	{% else %}
 	    <p>No products matched search.</p>
 	{% endif %}
+
  {% endblock %}
-</body>

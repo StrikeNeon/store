@@ -2,29 +2,44 @@
 
 {% for item in basket %}
     {% with product=item.product %}
-        <div class="basket_record">
+        <div class="basket_record", id="{{ product.id }}">
             <span class="product_name"><a href="/{{ product.id }}/">{{ product.name }}
                 {% if product.picture %}
                     <img src= " {{ product.picture.url }}"class="img-responsive" style="width: 20%; float: left; margin-right: 15px;"></img>
                 {% else %}
-                    <img src= "{% static "img/no_image.png" %}"></img>
+                    <img src= "{% static "img/no_image.jpg" %}"></img>
                 {% endif %}
                 </a></span>
             <span class="category_name">{{ product.usage }}</span> 
             <input name="{{ product.id }}"type="number" class="form-control"
                                 value="{{ item.quantity }}" min="0">
-            <span class="product_cost">{{ product.price }} ed</span>
-            <button class="btn btn-round">
-            remove item
-            </button>
+            <span class="product_cost">{{ product.price }} $</span>
+                <a class="remove_item" id="remove{{product.id}}" href="#" prod-id="{{ product.id }}">remove item</a>
         </div>
     {% endwith %}
     
 {% endfor %}
 
-{% if basket %}
-    <div class="basket_summary">
-        items in total {{ basket.get_total_quantity }}
-        {{ basket.get_total_price }} ed
-    </div>
-{% endif %}
+<script type="text/javascript">
+    $('.remove_item').click(function(){
+    var product_id;
+    product_id = $(this).attr("prod-id");
+    $.ajax(
+    {
+        type:"POST",
+        url: "/cart_remove",
+        data:{
+            product_id: product_id
+        },
+        success: function( data ) 
+        {
+            location.reload();
+        }
+     })
+});
+</script>
+
+<div class="basket_summary">
+    items in total {{ basket.get_total_quantity }}
+    {{ basket.get_total_price }} $
+</div>

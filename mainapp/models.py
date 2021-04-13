@@ -16,8 +16,8 @@ class user_profile_info(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True)
-    age = models.PositiveIntegerField(verbose_name='age',
-                                      null=True, blank=True,
+    age = models.PositiveIntegerField(verbose_name='age', null=True,
+                                      blank=True,
                                       validators=[MaxValueValidator(100)])
     gender = models.CharField(verbose_name='gender', max_length=1,
                               choices=gender_choices, null=True, blank=True)

@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.db.models import Avg
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -13,6 +15,10 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import transaction
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 from .tokens import account_activation_token
 from .models import brand, merch, order_item, review
@@ -33,8 +39,11 @@ def construct_path():
     return template_path
 
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+
 # -----------------------------CART SECTION--------------------------------
-@require_POST  # this allows for multiple products to be added (via forms)
+@require_POST
 def cart_add(request, product_id):
     basket = basket_logic.basket(request)
     product = get_object_or_404(merch, id=product_id)
@@ -43,25 +52,28 @@ def cart_add(request, product_id):
         cd = form.cleaned_data
         # the cd will return all of the form objects as strings !REMEMBER THAT!
         basket.add(product=product,  # calling the add method
-                   quantity=cd['quantity'],
-                   update_quantity=cd['update'])
+                   quantity=cd.get('quantity'))
     return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
 
-def cart_remove(request, product_id):
+@csrf_exempt
+@require_POST
+def cart_remove(request):
     if request.is_ajax():
+        product_id = request.POST['product_id']
         basket = basket_logic.basket(request)
-        product = get_object_or_404(merch, id=product_id)
-        basket.remove(product)
+        basket.remove(product_id)
         content = {
             'basket': basket,
         }
-        result = render_to_string('inc_basket_list.html',
-                                  content)
-        return JsonResponse({'result': result})
+        return render(request, 'inc_basket_list.html', content)
 
 
 def cart_detail(request):  # it just calls the basket and renders
+    basket = cache.get(request.session)
+    if not basket:
+        basket = basket_logic.basket(request)
+        cache.set(request.session, basket, CACHE_TTL)
     basket = basket_logic.basket(request)
     return render(request, 'basket.html', {'basket': basket})
 
@@ -79,6 +91,7 @@ def basket_edit(request, pk, quantity):
         return JsonResponse({'result': result})
 
 
+@transaction.atomic
 def order_create(request):
     basket = basket_logic.basket(request)
     if request.method == 'POST':
@@ -87,9 +100,9 @@ def order_create(request):
             order = form.save()
             for item in basket:
                 order_item.objects.create(order=order,
-                                          product=item['product'],
-                                          price=item['price'],
-                                          quantity=item['quantity'])
+                                          product=item.get('product'),
+                                          price=item.get('price'),
+                                          quantity=item.get('quantity'))
 
             basket.clear()
             return render(request, 'ordered.html',
@@ -106,8 +119,8 @@ def user_login(request):
         form = login_form(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(username=cd['username'],
-                                password=cd['password'])
+            user = authenticate(username=cd.get('username'),
+                                password=cd.get('password'))
             if user is not None:
                 if user.is_active:
                     login(request, user)
@@ -121,6 +134,7 @@ def user_login(request):
     return render(request, 'login.html', {'form': form})
 
 
+@transaction.atomic
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -133,7 +147,7 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             if 'profile_pic' in request.FILES:
-                profile.profile_pic = request.FILES['profile_pic']
+                profile.profile_pic = request.FILES.get('profile_pic')
             current_site = get_current_site(request)
             mail_subject = 'Activate your shop account.'
             message = render_to_string('acc_active_email.html', {
@@ -175,7 +189,9 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user,
               backend='django.contrib.auth.backends.ModelBackend')
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+
+        return HttpResponse('Thank you for your email confirmation.\
+                             Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -186,7 +202,8 @@ def edit(request):
 
     if request.method == 'POST':
         profile_form = user_profile_info_form(request.POST,
-                                              instance=request.user.user_profile_info)
+                                              instance=request.user.
+                                              user_profile_info)
         if profile_form.is_valid():
             profile_form.save()
             return HttpResponseRedirect(reverse('mainapp:edit_profile'))
@@ -207,15 +224,22 @@ def edit(request):
 
 class index(ListView):
     model = merch
-    ordering = ['-publish_date']
     paginate_by = 5
     template_name = 'index.html'
     context_object_name = 'product'
     form = search_form()
+    
+    def get_queryset(self):
+        queryset = cache.get('products')
+        if not queryset:
+            queryset = merch.objects.all().select_related('brand').order_by('-publish_date')
+            cache.set("products", queryset, CACHE_TTL)
+        return queryset
 
     def get_context_data(self):
         context = super().get_context_data()
-        context['products'] = merch.objects.all()
+        context['products'] = self.get_queryset()
+
         return context
 
 
@@ -239,17 +263,24 @@ class search(ListView):
 
 class brand_list(ListView):
     model = brand
-    ordering = ['-brand_name']
     paginate_by = 5
     template_name = 'brands.html'
     context_object_name = 'brand_list'
 
+    def get_queryset(self):
+        queryset = cache.get('brands')
+        if not queryset:
+            queryset = brand.objects.all().order_by('-brand_name')
+            cache.set("brands", queryset, CACHE_TTL)
+        return queryset
+
     def get_context_data(self):
         context = super().get_context_data()
-        context['brand_list'] = brand.objects.all()
+        context['brand_list'] = self.get_queryset()
         return context
 
 
+@transaction.atomic
 def review_add(request, product_id):
     form = review_form(request.POST)
     if form.is_valid():
@@ -263,15 +294,17 @@ def review_add(request, product_id):
                                         args=[product_id]))
 
 
+@cache_page(CACHE_TTL)
 def product_detail(request, product_id):
     product = get_object_or_404(merch, pk=product_id,)
     cart_product_form = cart_add_product_form()
-    review_list = review.objects.filter(product=product_id)[:5]
+    reviews = review.objects.filter(product=product_id)
+    review_list = reviews[:5]
     form = review_form()
     context = {'product': product, 'cart_product_form': cart_product_form,
                'review_form': form, 'review_list': review_list}
     if review_list:
-        review_avg = round(review.objects.filter(product=product_id).aggregate(Avg('rating'))['rating__avg'], 2)
+        review_avg = round(reviews.aggregate(Avg('rating'))['rating__avg'], 2)
         context['rating'] = review_avg
     else:
         pass
@@ -288,6 +321,7 @@ def about_page(request):
     return render(request, path.join(construct_path(), 'about.html'), context)
 
 
+@cache_page(CACHE_TTL)
 def brand_detail(request, brand_id):
     brand_object = get_object_or_404(brand, pk=brand_id)
     return render(request, 'brand_detail.html', {'brand': brand_object})

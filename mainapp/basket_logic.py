@@ -33,19 +33,30 @@ class basket(object):
             self.cart[product_id]['quantity'] += quantity
         self.save()
 
+    def substract(self, product, quantity=1, update_quantity=False):
+        """
+        Substract from cart and update quantity
+        """
+        product_id = str(product.id)
+        if self.cart[product_id]['quantity'] > 1:
+            # !conversion from string values as passed by form
+            self.cart[product_id]['quantity'] -= quantity
+        else:
+            self.cart.remove(product)
+        self.save()
+
     def save(self):
         # Updating cart session
         self.session[settings.CART_SESSION_ID] = self.cart
         # mark as modified to make sure it's saved
         self.session.modified = True
 
-    def remove(self, product):
+    def remove(self, product_id):
         """
         Removing item from cart
         """
-        product_id = str(product.id)
         if product_id in self.cart:
-            del self.cart[product_id]
+            del self.cart[str(product_id)]
             self.save()
 
     def __iter__(self):

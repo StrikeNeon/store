@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 
 {% extends "master.html" %}
-{% load static %}
 {% block title %}
     <title>Cart</title>
 {% endblock %}
 {% block content %}
+
     <h1>Your shopping cart</h1>
     {%if basket%}
+
     <div class="basket_list">
         {% include 'inc_basket_list.html' %}
     </div>
+    <p class="text-right">
+        <a href="{% url "mainapp:order_create" %}" class="button"> Place order </a>
+    </p>
     {%else%}
     <p>no items to display</p>
     {%endif%}
     <p class="text-right">
         <a href="{% url 'mainapp:frontpage' %}" class="button light">Continue shopping</a>
-        <a href="{% url "mainapp:order_create" %}" class="button"> Place order </a>
     </p>
+
 {% endblock %}

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 
 {% extends "master.html" %}
+{% load cache %}
+
 {% block title %}
 <div class="index">
-<title> Product details</title>
-<h1> {{product.name}} details </h1>
+{%with name=product.name%}
+<h1> {{name}} details </h1>
+{%endwith%}
 </div>>
 {% endblock %}
 
 {% block content %} 
 <div class="new_line">
+{% with rating=rating price=product.price brand=product.brand usage=product.usage description=product.description pic=product.picture.url%}
 <table>
 	    <tr>
-	        <img src="{{product.picture.url}}" class="img-responsive" style="width: 10%; float: left; margin-right: 15px;"></img>
-	        <p> {{ product.description }}</p>
-	        <td> {{ product.usage }}</td>
-			<td> {{ product.brand }}</td>
-			<td> {{ product.price }} $</td>
+	        <img src="{{pic}}" class="img-responsive" style="width: 10%; float: left; margin-right: 15px;"></img>
+	        <p> {{ description }}</p>
+	        <td> {{ usage }}</td>
+			<td> {{ brand }}</td>
+			<td> {{ price }} $</td>
 			<td> {{ rating }} stars</td>
 	    </tr>
 	</table>
+{%endwith%}
 
 {% if user.is_authenticated %}
 <form action="{% url 'mainapp:cart_add' product.pk %}" method="post">
@@ -51,5 +56,4 @@
 {% endif %}
 </div>
  {% endblock %}
-</body>
 

@@ -6,3 +6,4 @@ psycopg2
 Pillow
 django-storages
 boto3
+django-redis
