@@ -47,7 +47,7 @@ try:
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
         REDIS_LOCATION = secret_keys['REDIS_LOCATION']
-        
+
 
 except FileNotFoundError:
 
@@ -215,10 +215,15 @@ DATABASES = {
 }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': REDIS_LOCATION
-    },
+    "default": {
+         "BACKEND": "redis_cache.RedisCache",
+         "LOCATION": REDIS_LOCATION,
+         "OPTIONS": {
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": None
+            }
+         }
+    }
 }
 
 # Cache time to live is 15 minutes.
