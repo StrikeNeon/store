@@ -47,6 +47,7 @@ try:
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
         REDIS_LOCATION = secret_keys['REDIS_LOCATION']
+        
 
 except FileNotFoundError:
 
@@ -214,14 +215,10 @@ DATABASES = {
 }
 
 CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_LOCATION,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "geekshop"
-    }
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': REDIS_LOCATION
+    },
 }
 
 # Cache time to live is 15 minutes.

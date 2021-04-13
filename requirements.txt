@@ -9,4 +9,4 @@ django_extensions
 django-debug-toolbar
 django-debug-toolbar-template-profiler
 boto3
-django-redis
+django-redis-cache
