@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.generic import ListView
 from django.db.models import Avg
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -42,7 +43,7 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 # -----------------------------CART SECTION--------------------------------
-@require_POST  # this allows for multiple products to be added (via forms)
+@require_POST
 def cart_add(request, product_id):
     basket = basket_logic.basket(request)
     product = get_object_or_404(merch, id=product_id)
@@ -51,22 +52,21 @@ def cart_add(request, product_id):
         cd = form.cleaned_data
         # the cd will return all of the form objects as strings !REMEMBER THAT!
         basket.add(product=product,  # calling the add method
-                   quantity=cd.get('quantity'),
-                   update_quantity=cd.get('update'))
+                   quantity=cd.get('quantity'))
     return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
 
-def cart_remove(request, product_id):
+@csrf_exempt
+@require_POST
+def cart_remove(request):
     if request.is_ajax():
+        product_id = request.POST['product_id']
         basket = basket_logic.basket(request)
-        product = get_object_or_404(merch, id=product_id)
-        basket.remove(product)
+        basket.remove(product_id)
         content = {
             'basket': basket,
         }
-        result = render_to_string('inc_basket_list.html',
-                                  content)
-        return JsonResponse({'result': result})
+        return render(request, 'inc_basket_list.html', content)
 
 
 def cart_detail(request):  # it just calls the basket and renders

@@ -51,13 +51,12 @@ class basket(object):
         # mark as modified to make sure it's saved
         self.session.modified = True
 
-    def remove(self, product):
+    def remove(self, product_id):
         """
         Removing item from cart
         """
-        product_id = str(product.id)
         if product_id in self.cart:
-            del self.cart[product_id]
+            del self.cart[str(product_id)]
             self.save()
 
     def __iter__(self):
