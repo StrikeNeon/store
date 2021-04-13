@@ -306,9 +306,9 @@ else:
     }
     AWS_DEFAULT_ACL = None
     STATIC_LOCATION = 'static'
-    STATICFILES_STORAGE = 'geekshop.storage_backends.StaticStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATIC_URL = '/staticfiles/'
 
     MEDIA_LOCATION = 'media'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
