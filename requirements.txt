@@ -5,6 +5,7 @@ django-heroku
 psycopg2
 Pillow
 django-storages
+django_extensions
 django-debug-toolbar
 django-debug-toolbar-template-profiler
 boto3
