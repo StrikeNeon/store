@@ -161,7 +161,6 @@ if DEBUG:
 else:
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
-        'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
@@ -305,7 +304,7 @@ else:
     }
     AWS_DEFAULT_ACL = None
     STATIC_LOCATION = 'static'
-    STATICFILES_STORAGE = 'geekshop.storage_backends.StaticStorage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3ManifestStaticStorage'
 
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
 
