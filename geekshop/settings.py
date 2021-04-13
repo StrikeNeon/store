@@ -98,7 +98,7 @@ if DEBUG:
         'django_extensions',
         'debug_toolbar',
         'template_profiler_panel',
-        'django_redis'
+        'redis_cache'
 
     ]
 else:
@@ -112,7 +112,7 @@ else:
         'django.contrib.staticfiles',
         'social_django',
         'storages',
-        'django_redis'
+        'redis_cache'
     ]
 
 
