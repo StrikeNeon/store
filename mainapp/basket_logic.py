@@ -24,9 +24,12 @@ class basket(object):
         product = get_object_or_404(merch, id=product_id)
         if product_id not in self.cart:
             # !conversion from string values as passed by form
-            self.cart[product_id] = {'product_id': product_id,
+            self.cart[product_id] = {'id': product_id,
+                                     'name': product.name,
+                                     'usage': product.usage,
                                      'quantity': 0,
-                                     'price': str(product.price)}
+                                     'price': str(product.price),
+                                     'image': product.picture.url if product.picture.url else None}
         if update_quantity:
             # if quantity is one use default case
             self.cart[product_id]['quantity'] = quantity
