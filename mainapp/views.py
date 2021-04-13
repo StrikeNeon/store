@@ -228,11 +228,13 @@ class index(ListView):
     template_name = 'index.html'
     context_object_name = 'product'
     form = search_form()
-    
+
     def get_queryset(self):
         queryset = cache.get('products')
         if not queryset:
-            queryset = merch.objects.all().select_related('brand').order_by('-publish_date')
+            queryset = merch.objects.all().\
+                       select_related('brand').\
+                       order_by('-publish_date')
             cache.set("products", queryset, CACHE_TTL)
         return queryset
 
