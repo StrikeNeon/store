@@ -189,6 +189,7 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user,
               backend='django.contrib.auth.backends.ModelBackend')
+
         return HttpResponse('Thank you for your email confirmation.\
                              Now you can login your account.')
     else:

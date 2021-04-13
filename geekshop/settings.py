@@ -82,6 +82,7 @@ ALLOWED_HOSTS = ["*"]
 DOMAINS = "https://test-store-a.herokuapp.com/"
 
 # Application definition
+
 if DEBUG:
     INSTALLED_APPS = [
         'mainapp.apps.mainappconfig',
@@ -112,6 +113,7 @@ else:
         'storages',
         'django_redis'
     ]
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
