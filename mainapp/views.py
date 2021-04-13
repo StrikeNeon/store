@@ -227,7 +227,7 @@ class index(ListView):
     template_name = 'index.html'
     context_object_name = 'product'
     form = search_form()
-    
+
     def get_queryset(self):
         queryset = cache.get('products')
         if not queryset:
