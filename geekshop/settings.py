@@ -305,10 +305,10 @@ else:
             'CacheControl': 'max-age=86400',
     }
     AWS_DEFAULT_ACL = None
-    STATIC_LOCATION = 'static'
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATIC_LOCATION = 'static-667"'
+    STATICFILES_STORAGE = 'geekshop.storage_backends.StaticStorage'
 
-    STATIC_URL = '/staticfiles/'
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
 
     MEDIA_LOCATION = 'media'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
