@@ -46,7 +46,7 @@ try:
         AWS_STORAGE_BUCKET_NAME = secret_keys['S3_BUCKET']
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
-        REDIS_LOCATION = secret_keys['REDIS_LOCATION']
+        REDIS_LOCATION = secret_keys['REDIS_URL']
 
 
 except FileNotFoundError:
@@ -75,7 +75,7 @@ except FileNotFoundError:
     AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET']
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
-    REDIS_LOCATION = os.environ['REDIS_LOCATION']
+    REDIS_LOCATION = os.environ['REDIS_URL']
 
 
 ALLOWED_HOSTS = ["*"]
