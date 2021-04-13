@@ -43,9 +43,6 @@ urlpatterns = [
     path('cart_detail/',
          views.cart_detail, name='cart_detail'),
 
-    path('add/<int:pk>/<int:quantity>/',
-         views.basket_edit, name='cart_edit'),
-
     path('review_add/<int:product_id>/',
          views.review_add, name='review_add'),
 

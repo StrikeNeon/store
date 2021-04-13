@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
-from django.http import JsonResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
@@ -46,12 +45,11 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 @require_POST
 def cart_add(request, product_id):
     basket = basket_logic.basket(request)
-    product = get_object_or_404(merch, id=product_id)
     form = cart_add_product_form(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
         # the cd will return all of the form objects as strings !REMEMBER THAT!
-        basket.add(product=product,  # calling the add method
+        basket.add(product_id=product_id,  # calling the add method
                    quantity=cd.get('quantity'))
     return HttpResponseRedirect(reverse('mainapp:cart_detail'))
 
@@ -78,19 +76,6 @@ def cart_detail(request):  # it just calls the basket and renders
     return render(request, 'basket.html', {'basket': basket})
 
 
-def basket_edit(request, pk, quantity):
-    if request.is_ajax():
-        basket = basket_logic.basket(request)
-        basket.add(product=pk,  # calling the add method
-                   quantity=int(quantity))
-        content = {
-            'basket': basket,
-        }
-        result = render_to_string('inc_basket_list.html',
-                                  content)
-        return JsonResponse({'result': result})
-
-
 @transaction.atomic
 def order_create(request):
     basket = basket_logic.basket(request)
@@ -99,8 +84,9 @@ def order_create(request):
         if form.is_valid():
             order = form.save()
             for item in basket:
+                product = get_object_or_404(merch, id=item.get('product_id'))
                 order_item.objects.create(order=order,
-                                          product=item.get('product'),
+                                          product=product,
                                           price=item.get('price'),
                                           quantity=item.get('quantity'))
 
@@ -292,7 +278,7 @@ def review_add(request, product_id):
         review_post.product = merch.objects.get(id=product_id)
         review_post.user_id = request.user
         review_post.save()
-    return HttpResponseRedirect(reverse('mainapp:product detail',
+    return HttpResponseRedirect(reverse('mainapp:product_detail',
                                         args=[product_id]))
 
 

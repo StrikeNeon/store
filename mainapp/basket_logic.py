@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from .models import merch
 
 
@@ -16,14 +17,15 @@ class basket(object):
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
-    def add(self, product, quantity=1, update_quantity=False):
+    def add(self, product_id, quantity=1, update_quantity=False):
         """
         Add to cart and update quantity
         """
-        product_id = str(product.id)
+        product = get_object_or_404(merch, id=product_id)
         if product_id not in self.cart:
             # !conversion from string values as passed by form
-            self.cart[product_id] = {'quantity': 0,
+            self.cart[product_id] = {'product_id': product_id,
+                                     'quantity': 0,
                                      'price': str(product.price)}
         if update_quantity:
             # if quantity is one use default case
@@ -32,16 +34,15 @@ class basket(object):
             self.cart[product_id]['quantity'] += quantity
         self.save()
 
-    def substract(self, product, quantity=1, update_quantity=False):
+    def substract(self, product_id, quantity=1, update_quantity=False):
         """
         Substract from cart and update quantity
         """
-        product_id = str(product.id)
         if self.cart[product_id]['quantity'] > 1:
             # !conversion from string values as passed by form
             self.cart[product_id]['quantity'] -= quantity
         else:
-            self.cart.remove(product)
+            self.cart.remove(product_id)
         self.save()
 
     def save(self):
