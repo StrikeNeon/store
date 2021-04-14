@@ -73,7 +73,6 @@ def cart_detail(request):  # it just calls the basket and renders
         basket = basket_logic.basket(request)
         cache.set(request.session, basket, CACHE_TTL)
     basket = basket_logic.basket(request)
-    print(basket)
     return render(request, 'basket.html', {'basket': basket})
 
 
